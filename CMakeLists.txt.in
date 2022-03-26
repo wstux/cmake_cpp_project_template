@@ -1,6 +1,17 @@
 cmake_minimum_required (VERSION 3.10)
 
 ################################################################################
+# Project definition
+################################################################################
+
+set(PROJECT_NAME @project_name@)
+set(COMMON_CMAKE_DIR @common_cmake_dir@)
+
+project(${PROJECT_NAME}
+        VERSION 0.0.1
+        LANGUAGES CXX)
+
+################################################################################
 # Build check
 ################################################################################
 
@@ -33,6 +44,12 @@ option(USE_LTO              "Use link-time optimization for release builds" ON)
 option(USE_PEDANTIC         "Tell the compiler to be pedantic" ON)
 option(USE_PTHREAD          "Use pthread library" OFF)
 option(USE_WERROR           "Tell the compiler to make the build fail when warnings are present" ON)
+
+################################################################################
+# Init cmake modules path
+################################################################################
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/${COMMON_CMAKE_DIR} ${CMAKE_MODULE_PATH})
 
 ################################################################################
 # Configuration options
@@ -85,17 +102,5 @@ include(build_targets)
 
 if (EXISTS ${CMAKE_SOURCE_DIR}/sources.cmake)
     include(${CMAKE_SOURCE_DIR}/sources.cmake PUBLIC)
-endif()
-
-if (EXISTS ${CMAKE_SOURCE_DIR}/libraries.cmake)
-    include(${CMAKE_SOURCE_DIR}/libraries.cmake PUBLIC)
-endif()
-
-if (EXISTS ${CMAKE_SOURCE_DIR}/executables.cmake)
-    include(${CMAKE_SOURCE_DIR}/executables.cmake PUBLIC)
-endif()
-
-if (EXISTS ${CMAKE_SOURCE_DIR}/tests.cmake)
-    include(${CMAKE_SOURCE_DIR}/tests.cmake PUBLIC)
 endif()
 
