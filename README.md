@@ -18,6 +18,7 @@ The *cmake_cpp_project_template* assumes you want to setup a project using
   * [Tests](#tests)
   * [Custom targets](#custom-targets)
 * [Build](#build)
+* [License](#license)
 
 ## Usage
 
@@ -39,4 +40,10 @@ Template Usage:
 ### Custom targets
 
 ## Build
+
+## License
+
+&copy; 2022 Chistyakov Alexander.
+
+Open sourced under MIT license, the terms of which can be read here — [MIT License](http://opensource.org/licenses/MIT).
 
