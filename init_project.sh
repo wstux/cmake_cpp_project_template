@@ -77,7 +77,7 @@ function usage
     echo "Copy required file to root repository directory and replace required params."
     echo ""
     echo "Mandatory arguments to long options are mandatory for short options too."
-    echo "  -r, --repo_path=[PWD]  Path to root repository directory (default ''pwd)."
+    echo "  -r, --repo_path=[PWD]  Path to root repository directory (default 'pwd')."
     echo "  -t, --template_path    Path to cmake template  directory."
     echo "  -p, --proj_name        Project name."
     echo "  -h, --help             Display this help end exit."
