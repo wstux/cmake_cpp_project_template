@@ -123,6 +123,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+echo "[ ERROR ] Script doesn't work. TODO fix it."
+exit 1
+
 if [[ $TEMPLATE_PATH == "./" ]]; then
     echo "[ ERROR ] Argument 'template_path' must be subdirectory."
     usage
