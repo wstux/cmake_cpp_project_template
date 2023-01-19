@@ -1,4 +1,4 @@
-ExeTarget(executable
+ExecTarget(executable
     SOURCES
         main.cpp
     LIBRARIES

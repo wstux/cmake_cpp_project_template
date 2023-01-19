@@ -1,3 +1,5 @@
+include(build_utils)
+
 ################################################################################
 # Keywords
 ################################################################################
@@ -12,7 +14,7 @@ set(_CUSTOM_TARGET_KW   COMMAND
                         DEPENDS
 )
 
-set(_EXE_TARGET_KW      ${_COMMON_TARGET_KW}
+set(_EXEC_TARGET_KW     ${_COMMON_TARGET_KW}
 )
 
 set(_LIB_TARGET_KW      ${_COMMON_TARGET_KW}
@@ -28,6 +30,7 @@ set(_LIST_VALUES_KW     HEADERS
                         LIBRARIES
                         COMMAND
                         DEPENDS
+                        INCLUDE_DIR
 )
 
 set(_FLAG_KW            MODULE
@@ -36,61 +39,9 @@ set(_FLAG_KW            MODULE
                         INTERFACE
 )
 
-function(_is_kw CHECK_STR KW_LIST RESULT)
-    set(${RESULT} 0 PARENT_SCOPE)
-    list(FIND ${KW_LIST} "${CHECK_STR}" IS_FIND)
-    if(NOT IS_FIND EQUAL -1)
-        set(${RESULT} 1 PARENT_SCOPE)
-    endif()
-endfunction()
-
-function(_parse_target_args TARGET_NAME KW_LIST)
-    set(key "")
-    set(to_parent_scope FALSE)
-    foreach(arg IN LISTS ARGN)
-        # Check is 'arg' a keyword.
-        _is_kw(${arg} "${KW_LIST}" is_keyword)
-        # Check is 'arg' a keyword and applies to flags keyword.
-        _is_kw(${arg} _FLAG_KW is_flag)
-
-        # If 'arg' is keyword - save 'arg' to 'key' variable and save key-flag to parent scope.
-        if(is_keyword)
-            if (to_parent_scope)
-                set(${TARGET_NAME}_${key} "${${TARGET_NAME}_${key}}" PARENT_SCOPE)
-                set(to_parent_scope FALSE)
-            endif()
-
-            set(key "${arg}")
-
-            if(is_flag)
-                set(${TARGET_NAME}_${key} TRUE PARENT_SCOPE)
-            endif()
-
-            continue()
-        endif()
-
-        # If 'key' variable is defined - add data to key args and add to parent scope.
-        if(key)
-            if(NOT DEFINED ${TARGET_NAME}_${key})
-                set(${TARGET_NAME}_${key} "${arg}")
-                set(to_parent_scope TRUE)
-            else()
-                _is_kw(${key} _LIST_VALUES_KW is_valid)
-                if(NOT is_valid)
-                    message(ERROR " Invalid value for key '${key}'")
-                endif()
-                
-                set(${TARGET_NAME}_${key} "${${TARGET_NAME}_${key}};${arg}")
-                set(to_parent_scope TRUE)
-            endif()
-        endif()
-    endforeach()
-
-    if (to_parent_scope)
-        set(${TARGET_NAME}_${key} "${${TARGET_NAME}_${key}}" PARENT_SCOPE)
-        set(to_parent_scope FALSE)
-    endif()
-endfunction()
+################################################################################
+# Targets
+################################################################################
 
 macro(CustomTarget TARGET_NAME)
     _parse_target_args(${TARGET_NAME} _CUSTOM_TARGET_KW ${ARGN})
@@ -106,8 +57,10 @@ endmacro()
 
 macro(LibTarget TARGET_NAME)
     _parse_target_args(${TARGET_NAME} _LIB_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _LIB_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
     if(${TARGET_NAME}_INTERFACE)
+#        message(INFO " Configure INTERFACE LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} INTERFACE)
         target_include_directories(
             ${TARGET_NAME} INTERFACE
@@ -120,6 +73,7 @@ macro(LibTarget TARGET_NAME)
             set(LIB_TYPE STATIC)
         endif()
 
+#        message(INFO " Configure ${LIB_TYPE} LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} ${LIB_TYPE}
                                    ${${TARGET_NAME}_HEADERS}
                                    ${${TARGET_NAME}_SOURCES}
@@ -138,9 +92,11 @@ macro(LibTarget TARGET_NAME)
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
 endmacro()
 
-macro(ExeTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _EXE_TARGET_KW ${ARGN})
+macro(ExecTarget TARGET_NAME)
+    _parse_target_args(${TARGET_NAME} _EXEC_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _EXEC_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
+#    message(INFO " Configure EXEC target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
@@ -160,8 +116,10 @@ macro(ExeTarget TARGET_NAME)
 endmacro()
 
 macro(TestTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _EXE_TARGET_KW ${ARGN})
+    _parse_target_args(${TARGET_NAME} _EXEC_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _EXEC_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
+#    message(INFO " Configure TEST target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
