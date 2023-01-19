@@ -14,7 +14,7 @@ set(_CUSTOM_TARGET_KW   COMMAND
                         DEPENDS
 )
 
-set(_EXE_TARGET_KW      ${_COMMON_TARGET_KW}
+set(_EXEC_TARGET_KW     ${_COMMON_TARGET_KW}
 )
 
 set(_LIB_TARGET_KW      ${_COMMON_TARGET_KW}
@@ -30,6 +30,7 @@ set(_LIST_VALUES_KW     HEADERS
                         LIBRARIES
                         COMMAND
                         DEPENDS
+                        INCLUDE_DIR
 )
 
 set(_FLAG_KW            MODULE
@@ -56,8 +57,10 @@ endmacro()
 
 macro(LibTarget TARGET_NAME)
     _parse_target_args(${TARGET_NAME} _LIB_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _LIB_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
     if(${TARGET_NAME}_INTERFACE)
+#        message(INFO " Configure INTERFACE LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} INTERFACE)
         target_include_directories(
             ${TARGET_NAME} INTERFACE
@@ -70,6 +73,7 @@ macro(LibTarget TARGET_NAME)
             set(LIB_TYPE STATIC)
         endif()
 
+#        message(INFO " Configure ${LIB_TYPE} LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} ${LIB_TYPE}
                                    ${${TARGET_NAME}_HEADERS}
                                    ${${TARGET_NAME}_SOURCES}
@@ -88,9 +92,11 @@ macro(LibTarget TARGET_NAME)
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
 endmacro()
 
-macro(ExeTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _EXE_TARGET_KW ${ARGN})
+macro(ExecTarget TARGET_NAME)
+    _parse_target_args(${TARGET_NAME} _EXEC_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _EXEC_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
+#    message(INFO " Configure EXEC target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
@@ -110,8 +116,10 @@ macro(ExeTarget TARGET_NAME)
 endmacro()
 
 macro(TestTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _EXE_TARGET_KW ${ARGN})
+    _parse_target_args(${TARGET_NAME} _EXEC_TARGET_KW ${ARGN})
+    _validate_args(${TARGET_NAME} _EXEC_TARGET_KW _FLAG_KW _LIST_VALUES_KW)
 
+#    message(INFO " Configure TEST target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
