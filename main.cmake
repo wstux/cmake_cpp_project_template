@@ -79,4 +79,5 @@ message(STATUS "[INFO ] Shared linker flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 ################################################################################
 
 include(build_targets)
+include(externals_targets)
 
