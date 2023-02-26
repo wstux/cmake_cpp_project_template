@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.10)
 # Project definition
 ################################################################################
 
-project(test
+project(ext1
         VERSION 0.0.1
         LANGUAGES CXX)
 
@@ -12,7 +12,7 @@ project(test
 # Init cmake modules path
 ################################################################################
 
-set(COMMON_CMAKE_DIR "..")
+set(COMMON_CMAKE_DIR cmake)
 set(COMMON_MAIN_CMAKE ${COMMON_CMAKE_DIR}/main.cmake)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/${COMMON_CMAKE_DIR} ${CMAKE_MODULE_PATH})
 
@@ -22,12 +22,5 @@ include(${COMMON_MAIN_CMAKE} PUBLIC)
 # Include source code
 ################################################################################
 
-add_subdirectory(externals)
-add_subdirectory(libs/interface_lib)
-add_subdirectory(libs/shared_lib)
-add_subdirectory(libs/shared_lib_2)
-add_subdirectory(libs/static_lib)
-add_subdirectory(libs/static_lib_2)
-add_subdirectory(src)
-add_subdirectory(tests)
+add_subdirectory(libs/ext_shared_lib)
 
