@@ -92,23 +92,6 @@ macro(LibTarget TARGET_NAME)
 
     foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
         add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
-    foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${lib})
-
-        get_target_property(target_type ${lib} TYPE)
-        if(target_type STREQUAL "INTERFACE_LIBRARY")
-            continue()
-        endif()
-
-        get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
     endforeach()
 
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
@@ -122,19 +105,10 @@ macro(ExecTarget TARGET_NAME)
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
-
-    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
-        add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
     foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
         target_link_libraries(${TARGET_NAME} ${lib})
 
+#        message(${lib})
         get_target_property(target_type ${lib} TYPE)
         if(target_type STREQUAL "INTERFACE_LIBRARY")
             continue()
@@ -142,6 +116,14 @@ macro(ExecTarget TARGET_NAME)
 
         get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
         target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
+    endforeach()
+
+    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
+        add_dependencies(${TARGET_NAME} ${deps})
+        
+        get_target_property(LIB_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
+        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
+        message(INFO " 1) deps = '${deps}'; LIB_INCLUDE_DIR = '${LIB_INCLUDE_DIR}'")
     endforeach()
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION bin)
@@ -156,16 +138,6 @@ macro(TestTarget TARGET_NAME)
                                   ${${TARGET_NAME}_SOURCES}
     )
     add_test(${TARGET_NAME} ${TARGET_NAME})
-
-    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
-        add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
     foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
         target_link_libraries(${TARGET_NAME} ${lib})
 
