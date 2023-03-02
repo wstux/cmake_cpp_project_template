@@ -2,6 +2,29 @@
 # Functions
 ################################################################################
 
+function(_add_lib_depends TARGET_NAME)
+    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
+        add_dependencies(${TARGET_NAME} ${deps})
+
+        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
+        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
+
+        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
+        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
+    endforeach()
+    foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
+        target_link_libraries(${TARGET_NAME} ${lib})
+
+        get_target_property(target_type ${lib} TYPE)
+        if(target_type STREQUAL "INTERFACE_LIBRARY")
+            continue()
+        endif()
+
+        get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
+        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
+    endforeach()
+endfunction()
+
 function(_is_kw CHECK_STR KW_LIST RESULT)
     set(${RESULT} 0 PARENT_SCOPE)
     list(FIND ${KW_LIST} "${CHECK_STR}" IS_FIND)

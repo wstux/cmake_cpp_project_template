@@ -75,9 +75,8 @@ macro(LibTarget TARGET_NAME)
         endif()
 
 #        message(INFO " Configure ${LIB_TYPE} LIB target '${TARGET_NAME}'")
-        add_library(${TARGET_NAME} ${LIB_TYPE}
-                                   ${${TARGET_NAME}_HEADERS}
-                                   ${${TARGET_NAME}_SOURCES}
+        add_library(${TARGET_NAME} ${LIB_TYPE} ${${TARGET_NAME}_HEADERS}
+                                               ${${TARGET_NAME}_SOURCES}
         )
 
         target_include_directories(${TARGET_NAME} PRIVATE ${${TARGET_NAME}_INCLUDE_DIR})
@@ -90,26 +89,7 @@ macro(LibTarget TARGET_NAME)
         message(ERROR "[ERROR] Unsupported library type")
     endif()
 
-    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
-        add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
-    foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${lib})
-
-        get_target_property(target_type ${lib} TYPE)
-        if(target_type STREQUAL "INTERFACE_LIBRARY")
-            continue()
-        endif()
-
-        get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
-    endforeach()
+    _add_lib_depends(${TARGET_NAME})
 
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
 endmacro()
@@ -123,26 +103,7 @@ macro(ExecTarget TARGET_NAME)
                                   ${${TARGET_NAME}_SOURCES}
     )
 
-    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
-        add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
-    foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${lib})
-
-        get_target_property(target_type ${lib} TYPE)
-        if(target_type STREQUAL "INTERFACE_LIBRARY")
-            continue()
-        endif()
-
-        get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
-    endforeach()
+    _add_lib_depends(${TARGET_NAME})
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION bin)
 endmacro()
@@ -157,26 +118,7 @@ macro(TestTarget TARGET_NAME)
     )
     add_test(${TARGET_NAME} ${TARGET_NAME})
 
-    foreach(deps IN LISTS ${TARGET_NAME}_DEPENDS)
-        add_dependencies(${TARGET_NAME} ${deps})
-
-        get_target_property(DEP_LIBRARIES ${deps} LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${DEP_LIBRARIES})
-
-        get_target_property(DEP_INCLUDE_DIR ${deps} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${DEP_INCLUDE_DIR})
-    endforeach()
-    foreach(lib IN LISTS ${TARGET_NAME}_LIBRARIES)
-        target_link_libraries(${TARGET_NAME} ${lib})
-
-        get_target_property(target_type ${lib} TYPE)
-        if(target_type STREQUAL "INTERFACE_LIBRARY")
-            continue()
-        endif()
-
-        get_target_property(LIB_INCLUDE_DIR ${lib} INCLUDE_DIRECTORIES)
-        target_include_directories(${TARGET_NAME} PRIVATE ${LIB_INCLUDE_DIR})
-    endforeach()
+    _add_lib_depends(${TARGET_NAME})
     enable_testing()
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION tests)
