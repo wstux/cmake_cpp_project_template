@@ -4,18 +4,15 @@ cmake_minimum_required (VERSION 3.10)
 # Build check
 ################################################################################
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+include(utils)
+
+AddPlatform("Linux")
+
+_is_supported_platform("${CMAKE_SYSTEM_NAME}" _is_support)
+if (_is_support)
     message(STATUS "[INFO ] Build for '${CMAKE_SYSTEM_NAME}' platform")
 else()
     message(FATAL_ERROR "[FATAL] Unsupported '${CMAKE_SYSTEM_NAME}' platform")
-endif()
-
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug" CACHE STRING
-        "Choose the type of build, options are: None(CMAKE_CXX_FLAGS or CMAKE_C_FLAGS used) Debug Release RelWithDebInfo MinSizeRel." FORCE)
-    message(STATUS "[INFO ] Use default build type: '${CMAKE_BUILD_TYPE}'")
-else()
-    message(STATUS "[INFO ] Build type: '${CMAKE_BUILD_TYPE}'")
 endif()
 
 ################################################################################
