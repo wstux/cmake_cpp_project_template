@@ -28,6 +28,10 @@ cmake_minimum_required (VERSION 3.10)
 
 include(utils)
 
+if (NOT COMMON_CMAKE_DIR)
+    message(FATAL_ERROR "[FATAL] COMMON_CMAKE_DIR variable is not setted")
+endif()
+
 AddPlatform("Linux")
 
 _is_supported_platform("${CMAKE_SYSTEM_NAME}" _is_support)
@@ -98,5 +102,6 @@ message(STATUS "[INFO ] Shared linker flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 ################################################################################
 
 include(build_targets)
-include(externals_targets)
+include(driver_targets)
+include(external_targets)
 
