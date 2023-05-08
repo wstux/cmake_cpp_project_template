@@ -84,7 +84,7 @@ function(_LinuxDriverTarget TARGET_NAME)
     foreach (_src IN LISTS ${TARGET_NAME}_SOURCES)
         # Fill list of source files.
         if (_src_files_list)
-            set(_src_files_list "\\\n\t${_src_files_list}\\\n\t${_src}")
+            set(_src_files_list "${_src_files_list}\\\n\t${_src}")
         else()
             set(_src_files_list "${_src}")
         endif()
@@ -100,6 +100,7 @@ function(_LinuxDriverTarget TARGET_NAME)
         # Cmake swears at the '/' character in the target name, so this character
         # is replaced with the '_' character.
         string(REPLACE "/" "_" _copy_file_target ${_src}_copy_file)
+        set(_copy_file_target ${_copy_file_target}_depend)
         add_custom_target(${_copy_file_target} ALL DEPENDS ${_src}_copy_file)
         if (_module_deps)
             set(_module_deps "${_module_deps};${_copy_file_target}")
