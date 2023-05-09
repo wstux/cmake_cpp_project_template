@@ -30,6 +30,7 @@ set(_DRIVER_TARGET_KW   INCLUDE_DIRS
                         SOURCES     # sources list
                         EXTRA_CFLAGS
                         EXTRA_LDFLAGS
+                        DEFINES
 )
 
 ################################################################################
@@ -51,8 +52,8 @@ function(_LinuxDriverTarget TARGET_NAME)
     ############################################################################
     # Adding header directories to build flags.
     set(_module_include_dirs "EXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}")
-    foreach (dir IN LISTS ${TARGET_NAME}_INCLUDE_DIRS)
-            set(_module_include_dirs "${_module_include_dirs}\nEXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}/${dir}")
+    foreach (_dir IN LISTS ${TARGET_NAME}_INCLUDE_DIRS)
+            set(_module_include_dirs "${_module_include_dirs}\nEXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}/${_dir}")
     endforeach()
 
     ############################################################################
@@ -68,14 +69,26 @@ function(_LinuxDriverTarget TARGET_NAME)
     if (CMAKE_BUILD_TYPE STREQUAL "release" OR CMAKE_BUILD_TYPE STREQUAL "Release")
         set(_extra_flags "${_extra_flags}\nEXTRA_CFLAGS += -O3")
     endif()
-    foreach (cflag IN LISTS ${TARGET_NAME}_EXTRA_CFLAGS)
-        set(_extra_flags "${_extra_flags}\nEXTRA_CFLAGS += ${cflag}")
+    foreach (_cflag IN LISTS ${TARGET_NAME}_EXTRA_CFLAGS)
+        set(_extra_flags "${_extra_flags}\nEXTRA_CFLAGS += ${_cflag}")
     endforeach()
 
     ############################################################################
     # Add linkage flags
-    foreach (ldflag IN LISTS ${TARGET_NAME}_EXTRA_LDFLAGS)
-        set(_extra_ld_flags "${_extra_ld_flags}\nEXTRA_LDFLAGS += ${ldflag}")
+    foreach (_ldflag IN LISTS ${TARGET_NAME}_EXTRA_LDFLAGS)
+        set(_extra_ld_flags "${_extra_ld_flags}\nEXTRA_LDFLAGS += ${_ldflag}")
+    endforeach()
+
+    ############################################################################
+    # Add compile definitions
+    set(_compile_definitions "")
+    foreach (_def IN LISTS ${TARGET_NAME}_DEFINES)
+        string(REPLACE "\"" "\\\"" _def ${_def})
+        if (_compile_definitions)
+            set(_compile_definitions "${_compile_definitions}\nEXTRA_CFLAGS += -D${_def}")
+        else()
+            set(_compile_definitions "EXTRA_CFLAGS += -D${_def}")
+        endif()
     endforeach()
 
     set(_src_files_list "")
@@ -126,6 +139,7 @@ function(_LinuxDriverTarget TARGET_NAME)
     set(MODULE_INCLUDE_DIRS     "${_module_include_dirs}")
     set(MODULE_EXTRA_CFLAGS     "${_extra_flags}")
     set(MODULE_EXTRA_LDFLAGS    "${_extra_ld_flags}")
+    set(MODULE_COMPILE_DIFS     "${_compile_definitions}")
     set(MODULE_SOURCE_FILES     "${_src_files_list}")
     set(MODULE_MAKE_SUB_DIRS    "${_subdirs_list}")
     set(_makefile_src "${CMAKE_SOURCE_DIR}/${COMMON_CMAKE_DIR}/Makefile_driver.in")
