@@ -2,7 +2,7 @@ DriverTarget(hello_module
     INCLUDE_DIRS
         module
     SOURCES
-        module/main.c
+        main.c
     DEFINES
         MOD_NAME="hello_module"
         MOD_CONFIG
