@@ -111,6 +111,10 @@ macro(LibTarget TARGET_NAME)
         message(ERROR "[ERROR] Unsupported library type")
     endif()
 
+    set_property(DIRECTORY PROPERTY ${TARGET_NAME}_INCLUDE_DIR
+                 ${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}
+    )
+
     _add_lib_depends(${TARGET_NAME})
 
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
