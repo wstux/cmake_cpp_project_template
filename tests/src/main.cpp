@@ -2,6 +2,7 @@
 #include <string>
 
 #include <ext_shared_lib/ext_shared_lib.h>
+#include <ext_shared_lib_2.h>
 
 #include "interface_lib/interface_lib.h"
 #include "shared_lib/shared_lib.h"
@@ -28,6 +29,7 @@ int main(int /*argc*/, char** /*argv*/)
     TEST_LIB(static_lib_func(), "static_lib_func");
 
     TEST_LIB(ext_shared_lib_func(), "ext_shared_lib_func");
+    TEST_LIB(ext_interface_lib_func(), "ext_interface_lib_func");
 
     TEST_LIB(shared_lib_func_2(), "shared_lib_func_2");
     TEST_LIB(static_lib_func_2(), "ext_shared_lib_func_2");

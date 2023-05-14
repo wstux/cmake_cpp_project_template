@@ -9,5 +9,6 @@ ExecTarget(executable
         static_lib_2
     DEPENDS
         ext1
+        ext2
 )
 
