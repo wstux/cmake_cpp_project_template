@@ -26,7 +26,7 @@ cmake_minimum_required (VERSION 3.10)
 # Build check
 ################################################################################
 
-include(utils)
+include(common)
 
 if (NOT COMMON_CMAKE_DIR)
     message(FATAL_ERROR "[FATAL] COMMON_CMAKE_DIR variable is not setted")
@@ -104,4 +104,5 @@ message(STATUS "[INFO ] Shared linker flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 include(build_targets)
 include(driver_targets)
 include(external_targets)
+include(wrapper_targets)
 
