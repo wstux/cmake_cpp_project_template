@@ -1,7 +1,7 @@
 COMMON_MK	:= ../common.mk
 
 .PHONY: default
-default: debug
+default: release/all
 
 ifeq ($(shell test -e $(COMMON_MK) && echo -n yes),yes)
 include $(COMMON_MK)
