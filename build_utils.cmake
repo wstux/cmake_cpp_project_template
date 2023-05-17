@@ -24,7 +24,16 @@
 # Functions
 ################################################################################
 
-function(_add_lib_depends TARGET_NAME)
+function(_configure_target TARGET_NAME)
+    if (NOT ${TARGET_NAME}_INCLUDE_DIR)
+        get_target_property(_cur_target_type ${TARGET_NAME} TYPE)
+        if(NOT _cur_target_type STREQUAL "INTERFACE_LIBRARY")
+            target_include_directories(${TARGET_NAME}
+                PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
+            )
+        endif()
+    endif()
+
     get_property(_depends DIRECTORY PROPERTY ${TARGET_NAME}_DEPENDS)
     foreach (_dep IN LISTS _depends)
         if (TARGET "${_dep}")

@@ -115,7 +115,7 @@ macro(LibTarget TARGET_NAME)
                  ${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}
     )
 
-    _add_lib_depends(${TARGET_NAME})
+    _configure_target(${TARGET_NAME})
 
     install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
 endmacro()
@@ -129,7 +129,7 @@ macro(ExecTarget TARGET_NAME)
                                   ${${TARGET_NAME}_SOURCES}
     )
 
-    _add_lib_depends(${TARGET_NAME})
+    _configure_target(${TARGET_NAME})
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION bin)
 endmacro()
@@ -144,7 +144,7 @@ macro(TestTarget TARGET_NAME)
     )
     add_test(${TARGET_NAME} ${TARGET_NAME})
 
-    _add_lib_depends(${TARGET_NAME})
+    _configure_target(${TARGET_NAME})
     enable_testing()
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION tests)
