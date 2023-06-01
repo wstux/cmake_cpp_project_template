@@ -31,11 +31,21 @@ build_$(1)/Makefile:
 $(1)/%: build_$(1)/Makefile
 	@make -j $(NJOB) --output-sync=target --no-print-directory -C build_$(1) $$*
 
+$(1): $(1)/all
+	@make -j $(NJOB) --output-sync=target --no-print-directory -C build_$(1) $$*
+
+.PHONY: $(1)/clean
 $(1)/clean:
 	@rm -rf build_$(1)
 
+# Is not implemented now
+.PHONY: $(1)/all_ut_run
 $(1)/all_ut_run: build_$(1)/Makefile
 	@make -j $(NJOB) -C build_$(1) test
+
+.PHONY: $(1)/coverage
+$(1)/coverage: #$(1)/all_ut_run
+	@echo "$(PATH)"
 
 endef
 
