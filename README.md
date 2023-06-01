@@ -17,6 +17,8 @@ The *cmake_cpp_project_template* assumes you want to setup a project using
   * [Executables](#executables)
   * [Tests](#tests)
   * [Custom targets](#custom-targets)
+  * [Drivers](#drivers)
+  * [Externals](#externals)
 * [Build](#build)
 * [License](#license)
 
@@ -31,6 +33,13 @@ Template Usage:
 
 ## Targets
 
+The library supports targets:
+* [LibTarget](#libraries) - for building libraries;
+* [ExecTarget](#executables) - for building executable files;
+* [TestTarget](#tests) - for building tests;
+* [DriverTarget](#drivers) - for building kernel modules;
+* [ExternalTarget and WrapperTarget](#externals) - for building external modules.
+
 ### Libraries
 
 ### Executables
@@ -38,6 +47,10 @@ Template Usage:
 ### Tests
 
 ### Custom targets
+
+### Drivers
+
+### Externals
 
 ## Build
 
