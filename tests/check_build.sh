@@ -63,6 +63,7 @@ TARGETS_LIST=(
 #    'interface_lib'
     'shared_lib' 'shared_lib_2' 'static_lib' 'static_lib_2'
     'executable' 'ut_test_target'
+    'ut_test_target_run'
     'all_ut_run')
 
 check_build_target

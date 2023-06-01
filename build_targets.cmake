@@ -67,15 +67,15 @@ set(_FLAG_KW            MODULE
 ################################################################################
 
 macro(CustomTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _CUSTOM_TARGET_KW ${ARGN})
+#    _parse_target_args(${TARGET_NAME} _CUSTOM_TARGET_KW ${ARGN})
 
-    foreach(key IN LISTS _CUSTOM_TARGET_KW)
-        foreach(dep IN LISTS ${TARGET_NAME}_${key})
-            list(APPEND ${TARGET_NAME}_BUILD_ARGS ${key} ${dep})
-        endforeach()
-    endforeach()
+#    foreach(key IN LISTS _CUSTOM_TARGET_KW)
+#        foreach(dep IN LISTS ${TARGET_NAME}_${key})
+#            list(APPEND ${TARGET_NAME}_BUILD_ARGS ${key} ${dep})
+#        endforeach()
+#    endforeach()
 
-    add_custom_target(${TARGET_NAME} ${${TARGET_NAME}_BUILD_ARGS})
+    add_custom_target(${TARGET_NAME} ${ARGN})
 endmacro()
 
 macro(LibTarget TARGET_NAME)
@@ -146,6 +146,12 @@ macro(TestTarget TARGET_NAME)
 
     _configure_target(${TARGET_NAME})
     enable_testing()
+
+    CustomTarget(${TARGET_NAME}_run
+        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}
+        DEPENDS ${TARGET_NAME}
+        VERBATIM
+    )
 
     install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION tests)
 endmacro()
