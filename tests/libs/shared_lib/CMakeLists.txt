@@ -4,5 +4,7 @@ LibTarget(shared_lib SHARED
     SOURCES
         details/shared_lib.cpp
     INCLUDE_DIR libs
+    COMPILE_DEFINITIONS
+        TEST_COMPILE_DEFINITIONS="shared_lib"
 )
 
