@@ -3,7 +3,7 @@ DriverTarget(hello_module
         module
     SOURCES
         main.c
-    DEFINES
+    COMPILE_DEFINITIONS
         MOD_NAME="hello_module"
         MOD_CONFIG
         MOD_NUM=1
