@@ -34,6 +34,12 @@ function(_configure_target TARGET_NAME)
         endif()
     endif()
 
+    if (${TARGET_NAME}_COMPILE_DEFINITIONS)
+        foreach (_def IN LISTS ${TARGET_NAME}_COMPILE_DEFINITIONS)
+            target_compile_definitions(${TARGET_NAME} PRIVATE ${_def})
+        endforeach()
+    endif()
+
     get_property(_depends DIRECTORY PROPERTY ${TARGET_NAME}_DEPENDS)
     foreach (_dep IN LISTS _depends)
         if (TARGET "${_dep}")
