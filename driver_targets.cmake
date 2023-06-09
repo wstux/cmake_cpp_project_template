@@ -30,7 +30,7 @@ set(_DRIVER_TARGET_KW   INCLUDE_DIRS
                         SOURCES     # sources list
                         EXTRA_CFLAGS
                         EXTRA_LDFLAGS
-                        DEFINES
+                        COMPILE_DEFINITIONS
 )
 
 ################################################################################
@@ -82,7 +82,7 @@ function(_LinuxDriverTarget TARGET_NAME)
     ############################################################################
     # Add compile definitions
     set(_compile_definitions "")
-    foreach (_def IN LISTS ${TARGET_NAME}_DEFINES)
+    foreach (_def IN LISTS ${TARGET_NAME}_COMPILE_DEFINITIONS)
         string(REPLACE "\"" "\\\"" _def ${_def})
         if (_compile_definitions)
             set(_compile_definitions "${_compile_definitions}\nEXTRA_CFLAGS += -D${_def}")

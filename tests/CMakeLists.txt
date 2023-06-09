@@ -22,6 +22,8 @@ include(${COMMON_MAIN_CMAKE} PUBLIC)
 # Include source code
 ################################################################################
 
+include(find_packages.cmake PUBLIC)
+
 add_subdirectory(drivers/hello_module)
 add_subdirectory(externals)
 add_subdirectory(libs/interface_lib)

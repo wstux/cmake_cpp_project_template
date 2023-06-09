@@ -31,6 +31,7 @@ set(_COMMON_TARGET_KW   HEADERS     # headers list
                         COMMENT     # message before build target
                         LIBRARIES
                         DEPENDS
+                        COMPILE_DEFINITIONS
 )
 
 set(_CUSTOM_TARGET_KW   COMMAND
