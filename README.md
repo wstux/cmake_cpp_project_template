@@ -266,10 +266,7 @@ To do:
 * for `LibTarget` add the ability to specify several types of libraries for one
   target (`SHARED` and `STATIC`);
 * for `LibTarget` change `HEADERS` or `INCLUDE_DIR` to specify the public
-  interface, and make the rest private, [example](https://pabloariasal.github.io/2018/02/19/its-time-to- do-cmake-right/);
-* for `LibTarget`, `ExecTarget`, `TestTarget` add support
-  `target_compile_definitions` for the target;
-* for `DriverTarget` rename `DEFINES` to `COMPILE_DEFINITIONS`.
+  interface, and make the rest private, [example](https://pabloariasal.github.io/2018/02/19/its-time-to- do-cmake-right/).
 
 ## License
 
