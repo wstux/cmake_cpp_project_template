@@ -53,7 +53,7 @@ function(_LinuxDriverTarget TARGET_NAME)
     # Adding header directories to build flags.
     set(_module_include_dirs "EXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}")
     foreach (_dir IN LISTS ${TARGET_NAME}_INCLUDE_DIRS)
-            set(_module_include_dirs "${_module_include_dirs}\nEXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}/${_dir}")
+        set(_module_include_dirs "${_module_include_dirs}\nEXTRA_CFLAGS += -I${CMAKE_CURRENT_SOURCE_DIR}/${_dir}")
     endforeach()
 
     ############################################################################
@@ -112,15 +112,12 @@ function(_LinuxDriverTarget TARGET_NAME)
         )
         # Cmake swears at the '/' character in the target name, so this character
         # is replaced with the '_' character.
-        string(REPLACE "/" "_" _copy_file_target ${_src}_copy_file)
-        set(_copy_file_target ${_copy_file_target}_depend)
-        add_custom_target(${_copy_file_target} ALL DEPENDS ${_src}_copy_file)
         if (_module_deps)
-            set(_module_deps "${_module_deps};${_copy_file_target}")
+            set(_module_deps "${_module_deps};${_src}_copy_file")
         else()
-            set(_module_deps "${_copy_file_target}")
+            set(_module_deps "${_src}_copy_file")
         endif()
-    
+
         get_filename_component(_src_dir ${_src} DIRECTORY)
         if (_src_dir)
             if ("${_src_dir}" IN_LIST _tmp_list)
@@ -162,7 +159,9 @@ function(_LinuxDriverTarget TARGET_NAME)
         DEPENDS ${_module_deps}
         VERBATIM
     )
-    add_custom_target(${TARGET_NAME} ALL DEPENDS ${_module_target})
+    add_custom_target(${TARGET_NAME} ALL
+                      DEPENDS ${_module_target}
+    )
 endfunction()
 
 ################################################################################

@@ -32,7 +32,7 @@ $(1)/%: build_$(1)/Makefile
 	@make -j $(NJOB) --output-sync=target --no-print-directory -C build_$(1) $$*
 
 $(1): $(1)/all
-	@make -j $(NJOB) --output-sync=target --no-print-directory -C build_$(1) $$*
+#	@make -j $(NJOB) --output-sync=target --no-print-directory -C build_$(1) $$*
 
 .PHONY: $(1)/clean
 $(1)/clean:
