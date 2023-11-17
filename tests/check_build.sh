@@ -64,7 +64,8 @@ TARGETS_LIST=(
     'shared_lib' 'shared_lib_2' 'static_lib' 'static_lib_2'
     'executable' 'ut_test_target'
     'ut_test_target_run'
-    'all_ut_run')
+#    'all_ut_run'
+    'test')
 
 check_build_target
 for target in ${TARGETS_LIST[@]}; do
