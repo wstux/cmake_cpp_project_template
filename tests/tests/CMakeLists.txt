@@ -7,3 +7,11 @@ TestTarget(ut_test_target
         static_lib
 )
 
+CustomTestTarget(ut_custom_test_target
+    SOURCE
+        ut_custom_test_target.sh
+    INTERPRETER
+        /bin/bash
+#    VERBATIM
+)
+
