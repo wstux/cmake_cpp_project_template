@@ -200,17 +200,30 @@ endif()
 
 # Set flags if isset options
 set_flag_by_opt(USE_ADDR_SANITIZER  "-fsanitize=address")
-try_set_flag_by_opt(USE_COVERAGE    "--coverage")
+
+#try_set_flag_by_opt(USE_COVERAGE    "--coverage -fprofile-arcs -ftest-coverage")
+#try_set_flag_by_opt(USE_COVERAGE    "--coverage -g -O0")#"-fprofile-arcs -ftest-coverage")
+#try_set_flag_by_opt(USE_COVERAGE    "-fprofile-arcs")
+set_flag_by_opt(USE_COVERAGE    "-fprofile-arcs")
+#try_set_flag_by_opt(USE_COVERAGE    "-ftest-coverage")
+set_flag_by_opt(USE_COVERAGE    "-ftest-coverage")
+#set_flag_by_opt(USE_COVERAGE    "-fprofile-generate=${CMAKE_BINARY_DIR}/coverage")
+#set_flag_by_opt(USE_COVERAGE    "-fprofile-dir=${CMAKE_BINARY_DIR}/coverage")
+#set_flag_by_opt(USE_COVERAGE    "-fprofile-prefix-path=${CMAKE_BINARY_DIR}/coverage")
+set_linker_flag_by_opt(USE_COVERAGE "-fprofile-arcs -lgcov")
+
 set_flag_by_opt(USE_FAST_MAT        "--ffast-math")
-set_flag_by_opt(USE_PEDANTIC        "-pedantic")
-set_flag_by_opt(USE_WERROR          "-Werror")
 
 set_flag_by_opt(USE_LTO             "-flto=auto")
 set_linker_flag_by_opt(USE_LTO      "-flto=auto")
 
+set_flag_by_opt(USE_PEDANTIC        "-pedantic")
+
+set_flag_by_opt(USE_WERROR          "-Werror")
+
 try_set_flag_by_opt(USE_PTHREAD             "-pthread")
 if (LINUX)
-    try_set_linker_flag_by_opt(USE_PTHREAD  "-pthread")
+    set_linker_flag_by_opt(USE_PTHREAD      "-pthread")
 endif()
 
  if (USE_PEDANTIC)

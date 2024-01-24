@@ -28,17 +28,19 @@ include(build_utils)
 # Keywords
 ################################################################################
 
-set(_EXT_TARGET_KW  BUILD_ARGS
-                    BUILD_CMD
-                    BUILDSYS
-                    DEPENDS
-                    FIND_PACKAGE
-                    INCLUDE_DIR
-                    INSTALL_DIR
-                    LIBRARIES
-                    LIBRARY_DIR
-                    SEARCH_DIR
-                    SOURCE_DIR
+set(_EXT_TARGET_FLAGS_KW    )
+set(_EXT_TARGET_VALUES_KW   BUILD_CMD
+                            BUILDSYS
+                            CONFIGURE_CMD
+                            INCLUDE_DIR
+                            INSTALL_DIR
+                            LIBRARY_DIR
+                            SEARCH_DIR
+                            SOURCE_DIR
+)
+set(_EXT_TARGET_LISTS_KW    BUILD_ARGS
+                            DEPENDS
+                            LIBRARIES
 )
 
 ################################################################################
@@ -46,7 +48,9 @@ set(_EXT_TARGET_KW  BUILD_ARGS
 ################################################################################
 
 function(ExternalTarget EXT_TARGET_NAME)
-    _parse_target_args(${EXT_TARGET_NAME} _EXT_TARGET_KW ${ARGN})
+    _parse_target_args(${EXT_TARGET_NAME} 
+        _EXT_TARGET_FLAGS_KW _EXT_TARGET_VALUES_KW _EXT_TARGET_LISTS_KW ${ARGN}
+    )
 
     if (DEFINED ${EXT_TARGET_NAME}_FIND_PACKAGE)
     
