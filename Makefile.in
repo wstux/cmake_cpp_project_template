@@ -27,19 +27,23 @@ $(1)/test: $(1)/all
 # Is not implemented now
 #.PHONY: $(1)/coverage
 #$(1)/coverage: $(1)/all
-#	@echo "$(PATH)"
+#	@make -j $(NJOB) -C build_$(1) test
 
 endef
 
 # Debug and release build types definition
 $(eval $(call common_rule,debug))
 $(eval $(call common_rule,release))
+#$(eval $(call common_rule,coverage))
 
 .PHONY: all
 all: release/all
 
 .PHONY: clean
 clean: release/clean
+
+#.PHONY: coverage
+#coverage: coverage/coverage
 
 .PHONY: test
 test: release/test
