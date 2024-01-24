@@ -56,6 +56,10 @@ function(_configure_target TARGET_NAME)
     endif()
 
     foreach(_lib IN LISTS _libraries _depends)
+        if (NOT TARGET ${_lib})
+            continue()
+        endif()
+
         get_target_property(_target_type ${_lib} TYPE)
         if(_target_type STREQUAL "INTERFACE_LIBRARY")
             get_property(_include_dirs DIRECTORY PROPERTY ${_lib}_INCLUDE_DIR)
@@ -64,6 +68,10 @@ function(_configure_target TARGET_NAME)
             endif()
             continue()
         endif()
+
+        if (_target_type STREQUAL "STATIC_LIBRARY" OR _target_type STREQUAL "MODULE_LIBRARY" OR _target_type STREQUAL "SHARED_LIBRARY")
+            target_link_libraries(${TARGET_NAME} ${_lib})
+        endif ()
 
         get_target_property(_dep_libraries ${_lib} LIBRARIES)
         if (_dep_libraries)
