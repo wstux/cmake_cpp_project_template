@@ -26,16 +26,20 @@ include(build_utils)
 # Keywords
 ################################################################################
 
-set(_CUSTOM_TEST_TARGET_KW  INTERPRETER
+set(_CUSTOM_TEST_FLAGS_KW   )
+set(_CUSTOM_TEST_VALUES_KW  INTERPRETER
                             SOURCE
 )
+set(_CUSTOM_TEST_LISTS_KW   )
 
 ################################################################################
 # Targets
 ################################################################################
 
 macro(CustomTestTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _CUSTOM_TEST_TARGET_KW ${ARGN})
+    _parse_target_args(${TARGET_NAME}
+        _CUSTOM_TEST_FLAGS_KW _CUSTOM_TEST_VALUES_KW _CUSTOM_TEST_LISTS_KW ${ARGN}
+    )
 
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${${TARGET_NAME}_SOURCE}
          "${${TARGET_NAME}_INTERPRETER} ${CMAKE_CURRENT_SOURCE_DIR}/${${TARGET_NAME}_SOURCE}\n"

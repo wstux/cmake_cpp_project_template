@@ -26,11 +26,13 @@ include(build_utils)
 # Keywords
 ################################################################################
 
-set(_DRIVER_TARGET_KW   INCLUDE_DIRS
-                        SOURCES     # sources list
+set(_DRIVER_FLAGS_KW    )
+set(_DRIVER_VALUES_KW   )
+set(_DRIVER_LISTS_KW    COMPILE_DEFINITIONS
                         EXTRA_CFLAGS
                         EXTRA_LDFLAGS
-                        COMPILE_DEFINITIONS
+                        INCLUDE_DIRS
+                        SOURCES
 )
 
 ################################################################################
@@ -169,7 +171,9 @@ endfunction()
 ################################################################################
 
 function(DriverTarget TARGET_NAME)
-    _parse_target_args(${TARGET_NAME} _DRIVER_TARGET_KW ${ARGN})
+    _parse_target_args(${TARGET_NAME}
+        _DRIVER_FLAGS_KW _DRIVER_VALUES_KW _DRIVER_LISTS_KW ${ARGN}
+    )
 
     if (UNIX)
         _LinuxDriverTarget(${TARGET_NAME})
