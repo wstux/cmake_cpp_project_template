@@ -51,7 +51,7 @@ message(STATUS "[INFO ] CMAKE_BINARY_DIR: '${CMAKE_BINARY_DIR}'")
 
 # Build options
 option(USE_ADDR_SANITIZER   "Try to use the address sanitizer" OFF)
-option(USE_COVERAGE         "Try to use coverage flag" ${_enable_coverage})
+option(USE_COVERAGE         "Try to use coverage flag" OFF)
 option(USE_FAST_MATH        "Tell the compiler to use fast math" OFF)
 option(USE_LTO              "Use link-time optimization for release builds" ON)
 option(USE_PEDANTIC         "Tell the compiler to be pedantic" ON)
