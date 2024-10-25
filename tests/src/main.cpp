@@ -11,17 +11,18 @@
 #include "interface_lib/interface_lib.h"
 #include "shared_lib/shared_lib.h"
 #include "shared_lib_2/shared_lib_2.h"
+#include "shared_lib_3/shared_lib_3.h"
 #include "static_lib/static_lib.h"
 #include "static_lib_2/static_lib_2.h"
+#include "static_lib_3/static_lib_3.h"
 
-
-#define TEST_LIB(lib_fn, et)                    \
-    if (lib_fn != et) {                         \
-        std::cerr << "lib_fn('" << lib_fn       \
-                  << "') != '" << et            \
-                  << "'" << std::endl;          \
-        rc = 1;                                 \
-    }
+#define TEST_LIB(fn, et)                                                       \
+    if (fn != et) {                                                            \
+        std::cerr << "[FAIL] lib_fn('" << fn << "') != '" << et << "'"         \
+                  << std::endl;                                                \
+        rc = 1;                                                                \
+    } else                                                                     \
+        std::cout << "[ OK ] lib_fn('" << fn << "')" << std::endl
 
 
 int main(int argc, char** argv)
@@ -56,6 +57,9 @@ int main(int argc, char** argv)
 
     TEST_LIB(shared_lib_func_2(), "shared_lib_2");
     TEST_LIB(static_lib_func_2(), "ext_shared_lib_func_2");
+
+    TEST_LIB(shared_lib_func_3(), "interface_lib_func");
+    TEST_LIB(static_lib_func_3(), "interface_lib_func");
 
     return rc;
 }
