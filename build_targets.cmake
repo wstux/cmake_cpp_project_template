@@ -96,7 +96,17 @@ macro(LibTarget TARGET_NAME)
 
     _configure_target(${TARGET_NAME})
 
-    install(TARGETS ${TARGET_NAME} LIBRARY DESTINATION libs)
+    if (${TARGET_NAME}_SHARED)
+        set_target_properties(${TARGET_NAME}
+            PROPERTIES
+                LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/lib"
+        )
+    elseif (${TARGET_NAME}_STATIC)
+        set_target_properties(${TARGET_NAME}
+            PROPERTIES
+                ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/arch"
+        )
+    endif()
 endmacro()
 
 macro(ExecTarget TARGET_NAME)
@@ -111,7 +121,10 @@ macro(ExecTarget TARGET_NAME)
 
     _configure_target(${TARGET_NAME})
 
-    install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION bin)
+    set_target_properties(${TARGET_NAME}
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
 endmacro()
 
 macro(TestTarget TARGET_NAME)
@@ -136,6 +149,9 @@ macro(TestTarget TARGET_NAME)
         VERBATIM
     )
 
-    install(TARGETS ${TARGET_NAME} RUNTIME DESTINATION tests)
+    set_target_properties(${TARGET_NAME}
+        PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test"
+    )
 endmacro()
 
