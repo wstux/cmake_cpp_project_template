@@ -132,6 +132,8 @@ macro(TestTarget TARGET_NAME)
         _EXEC_FLAGS_KW _EXEC_VALUES_KW _EXEC_LISTS_KW ${ARGN}
     )
 
+    set(_target_dir "${CMAKE_BINARY_DIR}/test")
+
 #    message(INFO " Configure TEST target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
@@ -144,14 +146,14 @@ macro(TestTarget TARGET_NAME)
     )
 
     CustomTarget(${TARGET_NAME}_run
-        COMMAND ${CMAKE_CURRENT_BINARY_DIR}/${TARGET_NAME}
+        COMMAND "${_target_dir}/${TARGET_NAME}"
         DEPENDS ${TARGET_NAME}
         VERBATIM
     )
 
     set_target_properties(${TARGET_NAME}
         PROPERTIES
-            RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/test"
+            RUNTIME_OUTPUT_DIRECTORY "${_target_dir}"
     )
 endmacro()
 

@@ -24,19 +24,26 @@
 # Functions
 ################################################################################
 
+function(_get_qualifier TARGET_NAME RESULT)
+    set(${RESULT} PRIVATE PARENT_SCOPE)
+    get_target_property(_type ${TARGET_NAME} TYPE)
+    if(_type STREQUAL "INTERFACE_LIBRARY")
+        set(${RESULT} INTERFACE PARENT_SCOPE)
+    endif()
+endfunction()
+
 function(_configure_target TARGET_NAME)
     if (NOT ${TARGET_NAME}_INCLUDE_DIR)
-        get_target_property(_cur_target_type ${TARGET_NAME} TYPE)
-        if(NOT _cur_target_type STREQUAL "INTERFACE_LIBRARY")
-            target_include_directories(${TARGET_NAME}
-                PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}
-            )
-        endif()
+        _get_qualifier(${TARGET_NAME}   _qualifier)
+        target_include_directories(${TARGET_NAME}
+            ${_qualifier} ${CMAKE_CURRENT_SOURCE_DIR}
+        )
     endif()
 
     if (${TARGET_NAME}_COMPILE_DEFINITIONS)
         foreach (_def IN LISTS ${TARGET_NAME}_COMPILE_DEFINITIONS)
-            target_compile_definitions(${TARGET_NAME} PRIVATE ${_def})
+            _get_qualifier(${TARGET_NAME}   _qualifier)
+            target_compile_definitions(${TARGET_NAME} ${_qualifier} ${_def})
         endforeach()
     endif()
 
