@@ -3,6 +3,6 @@ LibTarget(static_lib STATIC
         static_lib.h
     SOURCES
         details/static_lib.cpp
-    INCLUDE_DIR libs
+    INCLUDE_DIR src/libs
 )
 

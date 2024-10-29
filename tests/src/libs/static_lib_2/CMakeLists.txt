@@ -3,7 +3,7 @@ LibTarget(static_lib_2 STATIC
         static_lib_2.h
     SOURCES
         details/static_lib_2.cpp
-    INCLUDE_DIR libs
+    INCLUDE_DIR src/libs
     DEPENDS
         ext1
 )

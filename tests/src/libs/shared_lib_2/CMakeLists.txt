@@ -3,7 +3,7 @@ LibTarget(shared_lib_2 SHARED
         shared_lib_2.h
     SOURCES
         details/shared_lib_2.cpp
-    INCLUDE_DIR libs
+    INCLUDE_DIR src/libs
     LIBRARIES
         shared_lib
 )
