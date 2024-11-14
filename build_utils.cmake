@@ -59,7 +59,8 @@ function(_configure_target TARGET_NAME)
 
     get_property(_libraries DIRECTORY PROPERTY ${TARGET_NAME}_LIBRARIES)
     if (_libraries)
-        target_link_libraries(${TARGET_NAME} ${_libraries})
+        _get_qualifier(${TARGET_NAME}   _qualifier)
+        target_link_libraries(${TARGET_NAME} ${_qualifier} ${_libraries})
     endif()
 
     foreach(_lib IN LISTS _libraries _depends)
@@ -77,12 +78,14 @@ function(_configure_target TARGET_NAME)
         endif()
 
         if (_target_type STREQUAL "STATIC_LIBRARY" OR _target_type STREQUAL "MODULE_LIBRARY" OR _target_type STREQUAL "SHARED_LIBRARY")
-            target_link_libraries(${TARGET_NAME} ${_lib})
+            _get_qualifier(${TARGET_NAME}   _qualifier)
+            target_link_libraries(${TARGET_NAME} ${_qualifier} ${_lib})
         endif ()
 
         get_target_property(_dep_libraries ${_lib} LIBRARIES)
         if (_dep_libraries)
-            target_link_libraries(${TARGET_NAME} ${_dep_libraries})
+            _get_qualifier(${TARGET_NAME}   _qualifier)
+            target_link_libraries(${TARGET_NAME} ${_qualifier} ${_dep_libraries})
         endif()
 
         get_target_property(_include_dirs ${_lib} INCLUDE_DIRECTORIES)
