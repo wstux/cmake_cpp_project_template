@@ -23,32 +23,6 @@
 include(build_utils)
 
 ################################################################################
-# Keywords
-################################################################################
-
-set(_COMMON_TARGET_VALUES_KW    COMMENT     # message before build target
-                                INCLUDE_DIR
-)
-set(_COMMON_TARGET_LISTS_KW     HEADERS     # headers list
-                                SOURCES     # sources list
-                                LIBRARIES
-                                DEPENDS
-                                COMPILE_DEFINITIONS
-)
-
-set(_EXEC_FLAGS_KW              )
-set(_EXEC_VALUES_KW             ${_COMMON_TARGET_VALUES_KW})
-set(_EXEC_LISTS_KW              ${_COMMON_TARGET_LISTS_KW})
-
-set(_LIB_FLAGS_KW               MODULE      # Dinamic module library type
-                                SHARED      # Dinamic library type
-                                STATIC      # Static library type
-                                INTERFACE
-)
-set(_LIB_VALUES_KW              ${_COMMON_TARGET_VALUES_KW})
-set(_LIB_LISTS_KW               ${_COMMON_TARGET_LISTS_KW})
-
-################################################################################
 # Targets
 ################################################################################
 
@@ -57,8 +31,11 @@ macro(CustomTarget TARGET_NAME)
 endmacro()
 
 macro(LibTarget TARGET_NAME)
+    set(_flags_kw   MODULE SHARED STATIC INTERFACE)
+    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
-        _LIB_FLAGS_KW _LIB_VALUES_KW _LIB_LISTS_KW ${ARGN}
+        _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
     if(${TARGET_NAME}_INTERFACE)
@@ -110,8 +87,11 @@ macro(LibTarget TARGET_NAME)
 endmacro()
 
 macro(ExecTarget TARGET_NAME)
+    set(_flags_kw   )
+    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
-        _EXEC_FLAGS_KW _EXEC_VALUES_KW _EXEC_LISTS_KW ${ARGN}
+        _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
 #    message(INFO " Configure EXEC target '${TARGET_NAME}'")
@@ -128,8 +108,11 @@ macro(ExecTarget TARGET_NAME)
 endmacro()
 
 macro(TestTarget TARGET_NAME)
+    set(_flags_kw   )
+    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
-        _EXEC_FLAGS_KW _EXEC_VALUES_KW _EXEC_LISTS_KW ${ARGN}
+        _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
     set(_target_dir "${CMAKE_BINARY_DIR}/test")
