@@ -108,7 +108,7 @@ macro(ExecTarget TARGET_NAME)
 endmacro()
 
 macro(TestTarget TARGET_NAME)
-    set(_flags_kw   )
+    set(_flags_kw   DISABLE)
     set(_values_kw  COMMENT INCLUDE_DIR)
     set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
@@ -116,6 +116,10 @@ macro(TestTarget TARGET_NAME)
     )
 
     set(_target_dir "${CMAKE_BINARY_DIR}/test")
+    set(_enable_autorun true)
+    if (${TARGET_NAME}_DISABLE)
+        set(_enable_autorun false)
+    endif()
 
 #    message(INFO " Configure TEST target '${TARGET_NAME}'")
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
@@ -123,10 +127,12 @@ macro(TestTarget TARGET_NAME)
     )
     _configure_target(${TARGET_NAME})
 
-    add_test(
-        NAME ${TARGET_NAME}
-        COMMAND $<TARGET_FILE:${TARGET_NAME}>
-    )
+    if (${_enable_autorun})
+        add_test(
+            NAME ${TARGET_NAME}
+            COMMAND $<TARGET_FILE:${TARGET_NAME}>
+        )
+    endif()
 
     CustomTarget(${TARGET_NAME}_run
         COMMAND "${_target_dir}/${TARGET_NAME}"
