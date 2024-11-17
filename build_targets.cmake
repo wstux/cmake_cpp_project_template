@@ -26,10 +26,6 @@ include(build_utils)
 # Targets
 ################################################################################
 
-macro(CustomTarget TARGET_NAME)
-    add_custom_target(${TARGET_NAME} ${ARGN})
-endmacro()
-
 macro(LibTarget TARGET_NAME)
     set(_flags_kw   MODULE SHARED STATIC INTERFACE)
     set(_values_kw  COMMENT INCLUDE_DIR)
@@ -38,7 +34,7 @@ macro(LibTarget TARGET_NAME)
         _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
-    if(${TARGET_NAME}_INTERFACE)
+    if (${TARGET_NAME}_INTERFACE)
 #        message(INFO " Configure INTERFACE LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} INTERFACE)
         target_include_directories(
@@ -46,7 +42,7 @@ macro(LibTarget TARGET_NAME)
                 "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}>"
                 "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
         )
-    elseif(${TARGET_NAME}_SHARED OR ${TARGET_NAME}_STATIC)
+    elseif (${TARGET_NAME}_SHARED OR ${TARGET_NAME}_STATIC)
         set(LIB_TYPE SHARED)
         if (${TARGET_NAME}_STATIC)
             set(LIB_TYPE STATIC)
