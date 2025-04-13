@@ -28,7 +28,7 @@ include(build_utils)
 
 macro(LibTarget TARGET_NAME)
     set(_flags_kw   MODULE SHARED STATIC INTERFACE)
-    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_values_kw  COMMENT INCLUDE_DIR LANGUAGE)
     set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
         _flags_kw _values_kw _lists_kw ${ARGN}
@@ -67,6 +67,10 @@ macro(LibTarget TARGET_NAME)
                  ${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}
     )
 
+    if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
+        set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE ${${TARGET_NAME}_LANGUAGE})
+    endif()
+
     _configure_target(${TARGET_NAME})
 
     if (${TARGET_NAME}_SHARED)
@@ -84,7 +88,7 @@ endmacro()
 
 macro(ExecTarget TARGET_NAME)
     set(_flags_kw   )
-    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_values_kw  COMMENT INCLUDE_DIR LINKER_LANGUAGE)
     set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
         _flags_kw _values_kw _lists_kw ${ARGN}
@@ -94,6 +98,10 @@ macro(ExecTarget TARGET_NAME)
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
+
+    if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
+        set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE ${${TARGET_NAME}_LANGUAGE})
+    endif()
 
     _configure_target(${TARGET_NAME})
 
@@ -105,7 +113,7 @@ endmacro()
 
 macro(TestTarget TARGET_NAME)
     set(_flags_kw   DISABLE)
-    set(_values_kw  COMMENT INCLUDE_DIR)
+    set(_values_kw  COMMENT INCLUDE_DIR LINKER_LANGUAGE)
     set(_lists_kw   HEADERS SOURCES LIBRARIES DEPENDS COMPILE_DEFINITIONS)
     _parse_target_args(${TARGET_NAME}
         _flags_kw _values_kw _lists_kw ${ARGN}
@@ -121,6 +129,9 @@ macro(TestTarget TARGET_NAME)
     add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
                                   ${${TARGET_NAME}_SOURCES}
     )
+    if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
+        set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE ${${TARGET_NAME}_LANGUAGE})
+    endif()
     _configure_target(${TARGET_NAME})
 
     if (${_enable_autorun})

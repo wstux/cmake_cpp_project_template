@@ -22,5 +22,6 @@
 
 enable_testing()
 
+include(sanitizers)
 include(utils)
 
