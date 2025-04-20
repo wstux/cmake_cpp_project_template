@@ -20,37 +20,49 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-set(_in_dirs "")
-if (EXISTS "${PROJECT_SOURCE_DIR}/README.md")
-    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${PROJECT_SOURCE_DIR}/README.md")
-    set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/README.md")
-endif()
-set(DOXYGEN_QUIET               YES)
-set(DOXYGEN_CALLER_GRAPH        YES)
-set(DOXYGEN_CALL_GRAPH          YES)
-set(DOXYGEN_EXTRACT_ALL         YES)
-set(DOXYGEN_GENERATE_TREEVIEW   YES)
-set(DOXYGEN_DOT_IMAGE_FORMAT    svg)
-set(DOXYGEN_DOT_TRANSPARENT     YES)
-
-if (EXISTS "${PROJECT_SOURCE_DIR}/drivers")
-    set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/drivers")
-endif()
-if (EXISTS "${PROJECT_SOURCE_DIR}/include")
-    set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/include")
-endif()
-if (EXISTS "${PROJECT_SOURCE_DIR}/src")
-    set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/src")
-endif()
-
-set(_working_dir "${CMAKE_BINARY_DIR}")
-execute_process(COMMAND bash -c "mkdir -p ${_working_dir}")
+################################################################################
+# Doxygen
+################################################################################
 
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
-
 if(Doxygen_FOUND)
+    set(_in_dirs "")
+    if (EXISTS "${PROJECT_SOURCE_DIR}/README.md")
+    #    set(DOXYGEN_USE_MDFILE_AS_MAINPAGE "${PROJECT_SOURCE_DIR}/README.md")
+    endif()
+
+    set(_working_dir "${CMAKE_BINARY_DIR}/docs/doxygen")
+    execute_process(COMMAND bash -c "mkdir -p ${_working_dir}")
+
+    set(DOXYGEN_QUIET               YES)
+    set(DOXYGEN_CALLER_GRAPH        YES)
+    set(DOXYGEN_CALL_GRAPH          YES)
+    set(DOXYGEN_EXTRACT_ALL         YES)
+    set(DOXYGEN_GENERATE_TREEVIEW   YES)
+    set(DOXYGEN_DOT_IMAGE_FORMAT    svg)
+    set(DOXYGEN_DOT_TRANSPARENT     YES)
+    set(DOXYGEN_GENERATE_HTML       YES)
+    set(DOXYGEN_GENERATE_MAN        NO)
+    set(DOXYGEN_OUTPUT_DIRECTORY    "${_working_dir}")    
+
+    set(_in_dirs "")
+    #if (EXISTS "${PROJECT_SOURCE_DIR}/README.md")
+    #    set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/README.md")
+    #endif()
+    if (EXISTS "${PROJECT_SOURCE_DIR}/drivers")
+        set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/drivers")
+    endif()
+    if (EXISTS "${PROJECT_SOURCE_DIR}/include")
+        set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/include")
+    endif()
+    if (EXISTS "${PROJECT_SOURCE_DIR}/src")
+        set(_in_dirs ${_in_dirs} "${PROJECT_SOURCE_DIR}/src")
+    endif()
+
+    #execute_process(COMMAND bash -c "mkdir -p ${_working_dir}")
+
     doxygen_add_docs(doxygen_docs ALL ${_in_dirs}
-                     WORKING_DIRECTORY "${_working_dir}"
-                     COMMENT "Generating documentation: ${_working_dir}/html/index.html")
+        WORKING_DIRECTORY "${_working_dir}"
+        COMMENT "Generating documentation: ${_working_dir}/html/index.html")
 endif()
 
