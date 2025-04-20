@@ -49,7 +49,7 @@ execute_process(COMMAND bash -c "mkdir -p ${_working_dir}")
 find_package(Doxygen OPTIONAL_COMPONENTS dot)
 
 if(Doxygen_FOUND)
-    doxygen_add_docs(docs ALL ${_in_dirs}
+    doxygen_add_docs(doxygen_docs ALL ${_in_dirs}
                      WORKING_DIRECTORY "${_working_dir}"
                      COMMENT "Generating documentation: ${_working_dir}/html/index.html")
 endif()
