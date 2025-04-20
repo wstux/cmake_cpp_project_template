@@ -22,6 +22,7 @@
 
 enable_testing()
 
+include(docs)
 include(sanitizers)
 include(utils)
 
