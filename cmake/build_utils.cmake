@@ -110,16 +110,16 @@ function(_parse_target_args TARGET_NAME KW_FLAGS KW_VALUES KW_LISTS)
         "${${KW_FLAGS}}" "${${KW_VALUES}}" "${${KW_LISTS}}"
     )
 
-    set(kw_list "${${KW_FLAGS}}" "${${KW_VALUES}}" "${${KW_LISTS}}")
-    foreach (arg IN LISTS ARGN)
+    set(_kw_list "${${KW_FLAGS}}" "${${KW_VALUES}}" "${${KW_LISTS}}")
+    foreach (_arg IN LISTS ARGN)
         # Check is 'arg' a keyword.
-        _is_kw(${arg} kw_list is_keyword)
+        _is_kw(${_arg} _kw_list _is_keyword)
 
         # If 'arg' is keyword - save 'arg' to 'key' variable and save key-flag to parent scope.
-        if (is_keyword)
-            set(key "${arg}")
-            set_property(DIRECTORY APPEND PROPERTY ${TARGET_NAME}_${key} "${${TARGET_NAME}_${key}}")
-            set(${TARGET_NAME}_${key} "${${TARGET_NAME}_${key}}" PARENT_SCOPE)
+        if (_is_keyword)
+            set(_key "${_arg}")
+            set_property(DIRECTORY APPEND PROPERTY ${TARGET_NAME}_${_key} "${${TARGET_NAME}_${_key}}")
+            set(${TARGET_NAME}_${_key} "${${TARGET_NAME}_${_key}}" PARENT_SCOPE)
         endif()
     endforeach()
 endfunction()
