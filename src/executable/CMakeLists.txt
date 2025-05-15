@@ -11,6 +11,7 @@ ExecTarget(executable
         static_lib
         static_lib_2
         static_lib_3
+        static_lib_boost
     DEPENDS
 #        boost
         ext1
