@@ -99,6 +99,15 @@ message(STATUS "[INFO ] Module linker flags: ${CMAKE_MODULE_LINKER_FLAGS}")
 message(STATUS "[INFO ] Shared linker flags: ${CMAKE_SHARED_LINKER_FLAGS}")
 
 ################################################################################
+# Configure git repository
+################################################################################
+
+include(hooks)
+
+InstallHook(pre-commit)
+InstallHook(commit-msg)
+
+################################################################################
 # Include targets functions
 ################################################################################
 
