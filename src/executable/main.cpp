@@ -7,6 +7,7 @@
 
 #include <ext_shared_lib/ext_shared_lib.h>
 #include <ext_shared_lib_2.h>
+#include <testing/testdefs.h>
 
 #include "interface_lib/interface_lib.h"
 #include "shared_lib/shared_lib.h"
@@ -25,6 +26,11 @@
     } else                                                                     \
         std::cout << "[ OK ] " << #fn << "('" << fn() << "')" << std::endl
 
+
+TEST(case_name_1, assert_true)
+{
+    ASSERT_TRUE(1 == 1) << "expected true";
+}
 
 int main(int argc, char** argv)
 {
@@ -63,6 +69,8 @@ int main(int argc, char** argv)
     TEST_LIB(static_lib_func_3, "interface_lib_func");
 
     TEST_LIB(static_lib_boost, "Tuesday 2001-Oct-09");
+
+    RUN_ALL_TESTS();
 
     return rc;
 }
