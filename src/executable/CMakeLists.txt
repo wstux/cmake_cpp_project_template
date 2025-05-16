@@ -16,5 +16,6 @@ ExecTarget(executable
 #        boost
         ext1
         ext2
+        testing
 )
 
