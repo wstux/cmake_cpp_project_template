@@ -32,13 +32,24 @@ function(_get_qualifier TARGET_NAME RESULT)
     endif()
 endfunction()
 
-function(_configure_target TARGET_NAME)
-    if (NOT ${TARGET_NAME}_INCLUDE_DIR)
-        _get_qualifier(${TARGET_NAME}   _qualifier)
-        target_include_directories(${TARGET_NAME}
-            ${_qualifier} ${CMAKE_CURRENT_SOURCE_DIR}
-        )
+function(_get_default_include_dirs TARGET_NAME RESULT)
+    set(_include_dirs "${CMAKE_CURRENT_SOURCE_DIR}")
+
+    cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _lib_dir)
+    if (_lib_dir)
+        set(_include_dirs "${_include_dirs}" "${_lib_dir}")
     endif()
+
+    set(${RESULT} "${_include_dirs}" PARENT_SCOPE)
+endfunction()
+
+function(_configure_target TARGET_NAME)
+    # Setting of default include directories.
+    _get_default_include_dirs(${TARGET_NAME}    _dfl_include_dirs)
+    _get_qualifier(${TARGET_NAME}               _qualifier)
+    target_include_directories(${TARGET_NAME}
+        ${_qualifier} ${CMAKE_CURRENT_SOURCE_DIR}
+    )
 
     if (${TARGET_NAME}_COMPILE_DEFINITIONS)
         foreach (_def IN LISTS ${TARGET_NAME}_COMPILE_DEFINITIONS)
