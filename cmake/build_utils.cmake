@@ -48,7 +48,7 @@ function(_configure_target TARGET_NAME)
     _get_default_include_dirs(${TARGET_NAME}    _dfl_include_dirs)
     _get_qualifier(${TARGET_NAME}               _qualifier)
     target_include_directories(${TARGET_NAME}
-        ${_qualifier} ${CMAKE_CURRENT_SOURCE_DIR}
+        ${_qualifier} ${_dfl_include_dirs}
     )
 
     if (${TARGET_NAME}_COMPILE_DEFINITIONS)
