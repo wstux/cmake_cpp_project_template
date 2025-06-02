@@ -33,14 +33,14 @@ function(_get_qualifier TARGET_NAME RESULT)
 endfunction()
 
 function(_get_default_include_dirs TARGET_NAME RESULT)
-    set(_include_dirs "${CMAKE_CURRENT_SOURCE_DIR}")
+    set(_include_dir "${CMAKE_CURRENT_SOURCE_DIR}")
 
     cmake_path(GET CMAKE_CURRENT_SOURCE_DIR PARENT_PATH _lib_dir)
     if (_lib_dir)
-        set(_include_dirs "${_include_dirs}" "${_lib_dir}")
+        set(_include_dir "${_lib_dir}")
     endif()
 
-    set(${RESULT} "${_include_dirs}" PARENT_SCOPE)
+    set(${RESULT} "${_include_dir}" PARENT_SCOPE)
 endfunction()
 
 function(_configure_target TARGET_NAME)
