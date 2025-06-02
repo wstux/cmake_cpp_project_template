@@ -34,38 +34,52 @@ macro(LibTarget TARGET_NAME)
         _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
+    set(_include_dir "")
+    if(${TARGET_NAME}_INCLUDE_DIR)
+        set(_include_dir "${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}")
+    else()
+        _get_default_include_dirs(${TARGET_NAME} _include_dir)
+    endif()
+
+    set(_qualifier PUBLIC)
     if (${TARGET_NAME}_INTERFACE)
-#        message(INFO " Configure INTERFACE LIB target '${TARGET_NAME}'")
         add_library(${TARGET_NAME} INTERFACE)
-        target_include_directories(
-            ${TARGET_NAME} INTERFACE
-                "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}>"
-                "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
-        )
+        set(_qualifier INTERFACE)
     elseif (${TARGET_NAME}_SHARED OR ${TARGET_NAME}_STATIC)
         set(LIB_TYPE SHARED)
         if (${TARGET_NAME}_STATIC)
             set(LIB_TYPE STATIC)
         endif()
 
-#        message(INFO " Configure ${LIB_TYPE} LIB target '${TARGET_NAME}'")
-        add_library(${TARGET_NAME} ${LIB_TYPE} ${${TARGET_NAME}_HEADERS}
-                                               ${${TARGET_NAME}_SOURCES}
+        add_library(${TARGET_NAME} ${LIB_TYPE}
+            ${${TARGET_NAME}_HEADERS} ${${TARGET_NAME}_SOURCES}
         )
 
-        target_include_directories(${TARGET_NAME} PRIVATE ${${TARGET_NAME}_INCLUDE_DIR})
-
-        set_target_properties(${TARGET_NAME}
-                              PROPERTIES
-                                  INCLUDE_DIRECTORIES ${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}
-        )
+        target_include_directories(${TARGET_NAME} PRIVATE ${_include_dir})
+        set_target_properties(${TARGET_NAME} PROPERTIES INCLUDE_DIRECTORIES ${_include_dir})
     else()
         message(ERROR "[ERROR] Unsupported library type")
     endif()
 
-    set_property(TARGET ${TARGET_NAME} PROPERTY ${TARGET_NAME}_INCLUDE_DIR
-                 ${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}
+    set(_public_headers "")
+    if (${TARGET_NAME}_HEADERS)
+        foreach (_hdr IN LISTS ${TARGET_NAME}_HEADERS)
+            set(_public_headers "${_public_headers}" "${CMAKE_CURRENT_SOURCE_DIR}/${_hdr}")
+        endforeach()
+    else()
+        file(GLOB _public_headers
+            "${CMAKE_CURRENT_SOURCE_DIR}/*.h"
+            "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp"
+        )
+    endif()
+
+    target_include_directories(
+        ${TARGET_NAME} ${_qualifier}
+            "$<BUILD_INTERFACE:${_include_dir}>"
+            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     )
+
+    set_property(DIRECTORY PROPERTY ${TARGET_NAME}_INCLUDE_DIR  ${_include_dir})
 
     if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
         set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE ${${TARGET_NAME}_LANGUAGE})
@@ -84,6 +98,17 @@ macro(LibTarget TARGET_NAME)
                 ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/arch"
         )
     endif()
+
+    set_target_properties(${TARGET_NAME} PROPERTIES
+        OUTPUT_NAME ${TARGET_NAME}
+        PUBLIC_HEADER "${_public_headers}"
+    )
+    install(TARGETS ${TARGET_NAME}
+        EXPORT ${TARGET_NAME}-targets
+        PUBLIC_HEADER DESTINATION   "include/${TARGET_NAME}"
+        LIBRARY DESTINATION         "${CMAKE_INSTALL_LIBDIR}"
+        ARCHIVE DESTINATION         "${CMAKE_INSTALL_LIBDIR}"
+    )
 endmacro()
 
 macro(ExecTarget TARGET_NAME)
@@ -94,9 +119,8 @@ macro(ExecTarget TARGET_NAME)
         _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
-#    message(INFO " Configure EXEC target '${TARGET_NAME}'")
-    add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
-                                  ${${TARGET_NAME}_SOURCES}
+    add_executable(${TARGET_NAME}
+        ${${TARGET_NAME}_HEADERS} ${${TARGET_NAME}_SOURCES}
     )
 
     if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
@@ -125,9 +149,8 @@ macro(TestTarget TARGET_NAME)
         set(_enable_autorun false)
     endif()
 
-#    message(INFO " Configure TEST target '${TARGET_NAME}'")
-    add_executable(${TARGET_NAME} ${${TARGET_NAME}_HEADERS}
-                                  ${${TARGET_NAME}_SOURCES}
+    add_executable(${TARGET_NAME}
+        ${${TARGET_NAME}_HEADERS} ${${TARGET_NAME}_SOURCES}
     )
     if ("${${TARGET_NAME}_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LANGUAGE}" STREQUAL "CXX")
         set_target_properties(${TARGET_NAME} PROPERTIES LINKER_LANGUAGE ${${TARGET_NAME}_LANGUAGE})
@@ -135,8 +158,7 @@ macro(TestTarget TARGET_NAME)
     _configure_target(${TARGET_NAME})
 
     if (${_enable_autorun})
-        add_test(
-            NAME ${TARGET_NAME}
+        add_test(NAME ${TARGET_NAME}
             COMMAND $<TARGET_FILE:${TARGET_NAME}>
         )
     endif()
