@@ -50,6 +50,8 @@ function(_set_command VAR VALUE DFL_VALUE)
     endif()
 endfunction()
 
+#file(MAKE_DIRECTORY ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
 ################################################################################
 # Targets
 ################################################################################
@@ -70,7 +72,6 @@ function(ExternalTarget EXT_TARGET_NAME)
     )
 
     set(_target_name    "${EXT_TARGET_NAME}")
-    set(_target_arch    "${_target_name}.tar.gz")
     set(_target_dir     "${EXTERNALS_PREFIX}/${_target_name}")
 
     set(_ext_url        ${${EXT_TARGET_NAME}_URL})
@@ -101,13 +102,27 @@ function(ExternalTarget EXT_TARGET_NAME)
 
     set(_libraries "")
     if (${EXT_TARGET_NAME}_LIBRARIES)
+        set(_libraries "${${EXT_TARGET_NAME}_LIBRARIES}")
         foreach (_lib IN LISTS ${EXT_TARGET_NAME}_LIBRARIES)
-            if (_libraries)
-                set(_libraries "${_libraries}" "${_install_dir}/lib/${_lib}")
-            else()
-                set(_libraries "${_install_dir}/lib/${_lib}")
-            endif()
+            set(_lib_path   "${_install_dir}/lib/${_lib}")
+            set(_cp_command  "bash -c \"cp -a ${_lib_path} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/\"\n")
+            set(_cpl_command "bash -c \"test -h ${_lib_path} && cp -a `readlink -f ${_lib_path}` ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ || true\"\n")
+            file(APPEND ${_target_dir}/${_target_name}-prefix/copy_libraries.sh "${_cp_command}")
+            file(APPEND ${_target_dir}/${_target_name}-prefix/copy_libraries.sh "${_cpl_command}")
+
+            #if (_libraries)
+            #    set(_libraries "${_libraries}" "${_install_dir}/lib/${_lib}")
+            #else()
+            #    set(_libraries "${_install_dir}/lib/${_lib}")
+            #endif()
         endforeach()
+
+        ExternalProject_Add_Step(${EXT_TARGET_NAME} copy-libraries
+            COMMAND bash ${_target_dir}/${_target_name}-prefix/copy_libraries.sh
+            WORKING_DIRECTORY <SOURCE_DIR>
+            DEPENDEES install
+            LOG 1
+        )
     endif()
 
     set_target_properties(${EXT_TARGET_NAME} PROPERTIES
