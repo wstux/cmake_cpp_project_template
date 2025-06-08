@@ -43,7 +43,7 @@ if(Doxygen_FOUND)
     set(DOXYGEN_DOT_TRANSPARENT     YES)
     set(DOXYGEN_GENERATE_HTML       YES)
     set(DOXYGEN_GENERATE_MAN        NO)
-    set(DOXYGEN_OUTPUT_DIRECTORY    "${_working_dir}")    
+    set(DOXYGEN_OUTPUT_DIRECTORY    "${_working_dir}")
 
     set(_in_dirs "")
     #if (EXISTS "${PROJECT_SOURCE_DIR}/README.md")

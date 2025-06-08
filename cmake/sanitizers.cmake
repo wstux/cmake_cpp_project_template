@@ -30,7 +30,7 @@ function(Sanitizers)
     _parse_target_args(${_name} _flags_kw _values_kw _lists_kw ${ARGN})
 
     set(_sanitizers "")
-    
+
     if (${_name}_ADDRESS)
         list(APPEND _sanitizers "address")
     endif()
