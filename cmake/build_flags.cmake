@@ -213,13 +213,14 @@ set_flag_by_opt(USE_COVERAGE    "-ftest-coverage")
 #set_flag_by_opt(USE_COVERAGE    "-fprofile-prefix-path=${CMAKE_BINARY_DIR}/coverage")
 set_linker_flag_by_opt(USE_COVERAGE "-fprofile-arcs -lgcov")
 
+set_linker_flag("-Wl,-rpath=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
+
 set_flag_by_opt(USE_FAST_MAT        "--ffast-math")
 
 set_flag_by_opt(USE_LTO             "-flto=auto")
 set_linker_flag_by_opt(USE_LTO      "-flto=auto")
 
 set_flag_by_opt(USE_PEDANTIC        "-pedantic")
-
 set_flag_by_opt(USE_WERROR          "-Werror")
 
 try_set_flag_by_opt(USE_PTHREAD             "-pthread")
