@@ -40,24 +40,6 @@ endif()
 set(EXTERNALS_PREFIX "${CMAKE_BINARY_DIR}/externals")
 
 ################################################################################
-# Keywords
-################################################################################
-
-set(_EXT_TARGET_FLAGS_KW    )
-set(_EXT_TARGET_VALUES_KW   BUILD_COMMAND
-                            CONFIGURE_COMMAND
-                            INCLUDE_DIR
-                            INSTALL_COMMAND
-                            INSTALL_DIR
-                            LIBRARIES
-                            URL
-                            #URL_MD5
-)
-set(_EXT_TARGET_LISTS_KW    #DEPENDS
-                            #LIBRARIES
-)
-
-################################################################################
 # Utility functiona
 ################################################################################
 
@@ -73,8 +55,18 @@ endfunction()
 ################################################################################
 
 function(ExternalTarget EXT_TARGET_NAME)
+    set(_flags_kw   )
+    set(_values_kw  BUILD_COMMAND
+                    CONFIGURE_COMMAND
+                    INCLUDE_DIR
+                    INSTALL_COMMAND INSTALL_DIR
+                    URL #URL_MD5
+    )
+    set(_lists_kw   #DEPENDS
+                    LIBRARIES
+    )
     _parse_target_args_strings(${EXT_TARGET_NAME}
-        _EXT_TARGET_FLAGS_KW _EXT_TARGET_VALUES_KW _EXT_TARGET_LISTS_KW ${ARGN}
+        _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
     set(_target_name    "${EXT_TARGET_NAME}")
@@ -110,12 +102,19 @@ function(ExternalTarget EXT_TARGET_NAME)
     set(_libraries "")
     if (${EXT_TARGET_NAME}_LIBRARIES)
         foreach (_lib IN LISTS ${EXT_TARGET_NAME}_LIBRARIES)
-            set(_libraries "${_libraries}" "${_install_dir}/lib/${_lib}")
+            if (_libraries)
+                set(_libraries "${_libraries}" "${_install_dir}/lib/${_lib}")
+            else()
+                set(_libraries "${_install_dir}/lib/${_lib}")
+            endif()
         endforeach()
     endif()
 
-    set_target_properties(${EXT_TARGET_NAME} PROPERTIES INCLUDE_DIRECTORIES "${_include_dir}")
-    set_target_properties(${EXT_TARGET_NAME} PROPERTIES IMPORTED_LOCATION "${_libraries}")
-    set_target_properties(${EXT_TARGET_NAME} PROPERTIES INSTALL_DIR "${install_dir}")
+    set_target_properties(${EXT_TARGET_NAME} PROPERTIES
+        INCLUDE_DIRECTORIES "${_include_dir}"
+        IMPORTED_LOCATION   "${_libraries}"
+        LIBRARIES           "${_libraries}"
+        INSTALL_DIR         "${install_dir}"
+    )
 endfunction()
 
