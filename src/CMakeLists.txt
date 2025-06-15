@@ -10,6 +10,7 @@ add_subdirectory(libs/static_lib_3)
 add_subdirectory(libs/static_lib_boost)
 
 add_subdirectory(executable)
+add_subdirectory(executable_boost)
 
 if (BUILD_TESTS)
     add_subdirectory(tests)
