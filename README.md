@@ -290,7 +290,19 @@ supports keywords:
   header files and libraries of the compiled target;
 * `URL` - internet address or path to the archive with the target's source files;
 * `LIBRARIES` - list of libraries provided by the target;
-* `DEPENDS` - list of the target's dependencies.
+* `DEPENDS` - list of the target's dependencies;
+* `PATCHES` - list of patches.
+
+Example of creating patches:
+```
+$ diff -uNr ./orig_repo/ ./patched_repo/ > patch_name.patch
+$ git diff > patch_name.patch #For git repositories
+```
+
+Example of applying patches:
+```
+$ patch -p1 --dry-run < patch_name.patch
+```
 
 External project build target template:
 ```
@@ -301,6 +313,7 @@ ExternalTarget(<ext_name>
     INSTALL_COMMAND     <command>
     INSTALL_DIR     <directory>
     INCLUDE_DIR     <directory>
+    PATCHES     <list_of_pathes>
     LIBRARIES   <list_of_libraries>
     DEPENDS     <list_of_target_dependencies>
 )
@@ -317,6 +330,8 @@ ExternalTarget(testing
         cmake --build ./
     INSTALL_COMMAND
         cmake --install ./
+    PATCHES
+        ${CMAKE_SOURCE_DIR}/externals/patches/patch_example.patch
     INCLUDE_DIR
         ${EXTERNALS_PREFIX}/testing/install/include
     INSTALL_DIR
