@@ -108,13 +108,16 @@ function(ExternalTarget EXT_TARGET_NAME)
         INSTALL_DIR         ${_install_dir}
         BUILD_COMMAND       ${_build_cmd}
         PATCH_COMMAND       ${_patch_cmd}
-        DEPENDS ${_depends}
+        DEPENDS             ${_depends}
     )
 
     set(_libraries "")
     if (${EXT_TARGET_NAME}_LIBRARIES)
         foreach (_lib IN LISTS ${EXT_TARGET_NAME}_LIBRARIES)
             set(_lib_path   "${_install_dir}/lib/${_lib}")
+            if (_lib MATCHES "/")
+                set(_lib_path   "${_install_dir}/${_lib}")
+            endif()
             if (_lib MATCHES ".*\.so.*")
                 set(_cp_command  "bash -c \"cp -a ${_lib_path} ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/\"\n")
                 set(_cpl_command "bash -c \"test -h ${_lib_path} && cp -a `readlink -f ${_lib_path}` ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/ || true\"\n")
