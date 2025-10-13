@@ -37,7 +37,8 @@ endif()
 # Constants
 ################################################################################
 
-set(EXTERNALS_PREFIX "${CMAKE_BINARY_DIR}/externals")
+set(EXTERNALS_PREFIX  "${CMAKE_BINARY_DIR}/externals")
+set(EXTERNALS_SRC_DIR "${CMAKE_SOURCE_DIR}/externals")
 
 ################################################################################
 # Utility functiona
