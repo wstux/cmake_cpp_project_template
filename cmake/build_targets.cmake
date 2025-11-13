@@ -35,7 +35,7 @@ macro(LibTarget TARGET_NAME)
     )
 
     set(_include_dir "")
-    if(${TARGET_NAME}_INCLUDE_DIR)
+    if (${TARGET_NAME}_INCLUDE_DIR)
         set(_include_dir "${PROJECT_SOURCE_DIR}/${${TARGET_NAME}_INCLUDE_DIR}")
     else()
         _get_default_include_dirs(${TARGET_NAME} _include_dir)

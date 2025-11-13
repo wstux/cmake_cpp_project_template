@@ -23,6 +23,7 @@
 include(ExternalProject)
 
 include(build_utils)
+include(utils)
 
 ################################################################################
 # Setting of cmake policies
@@ -43,14 +44,6 @@ set(EXTERNALS_SRC_DIR "${CMAKE_SOURCE_DIR}/externals")
 ################################################################################
 # Utility functions
 ################################################################################
-
-function(_append_to_list LIST_OF_VALUES VALUE)
-    if (${LIST_OF_VALUES})
-        set(${LIST_OF_VALUES} "${${LIST_OF_VALUES}}" "${VALUE}" PARENT_SCOPE)
-    else()
-        set(${LIST_OF_VALUES} "${VALUE}" PARENT_SCOPE)
-    endif()
-endfunction()
 
 function(_get_lib_path LIB_PATH INSTALL_DIR LIB)
     set(_lib_path   "${INSTALL_DIR}/lib/${LIB}")
