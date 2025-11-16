@@ -54,7 +54,7 @@ The library supports targets:
 * [ExecTarget](#executables) - building executable files;
 * [TestTarget](#tests) - building tests;
 * [DriverTarget](#drivers) - building kernel modules;
-* [ExternalTarget and WrapperTarget](#externals) - building external modules;
+* [ExternalTarget, FetchTarget and WrapperTarget](#externals) - building external modules;
 * [CustomTarget](#custom-targets) - custom targets.
 
 ### Libraries
@@ -338,6 +338,8 @@ ExternalTarget(testing
         ${EXTERNALS_PREFIX}/testing/install
 )
 ```
+
+#### Fetchs
 
 #### Wrappers
 
