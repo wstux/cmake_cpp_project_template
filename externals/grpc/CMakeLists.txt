@@ -71,6 +71,8 @@ FetchTarget(grpc
         RE2_TEST=OFF
         RE2_BENCHMARK=OFF
         RE2_BUILD_TESTING=OFF
+        # zlib flags
+        ZLIB_BUILD_EXAMPLES=OFF
     CMAKE_VARIABLES
         # abseil variables
         ABSL_ENABLE_INSTALL=ON
