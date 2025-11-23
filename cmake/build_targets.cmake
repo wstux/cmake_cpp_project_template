@@ -123,6 +123,8 @@ macro(ExecTarget TARGET_NAME)
         )
     endif()
 
+    #target_compile_options(${TARGET_NAME} PRIVATE ${COVERAGE_FLAGS})
+
     _configure_target(${TARGET_NAME})
 
     set_target_properties(${TARGET_NAME} PROPERTIES
