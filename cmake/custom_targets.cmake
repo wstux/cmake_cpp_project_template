@@ -35,6 +35,10 @@ macro(CustomTarget TARGET_NAME)
 endmacro()
 
 macro(CustomTestTarget TARGET_NAME)
+    if (NOT BUILD_TESTS)
+        return()
+    endif()
+
     set(_flags_kw   DISABLE)
     set(_values_kw  INTERPRETER SOURCE)
     set(_lists_kw   ARGUMENTS DEPENDS)
@@ -81,4 +85,3 @@ macro(CustomTestTarget TARGET_NAME)
         VERBATIM
     )
 endmacro()
-
