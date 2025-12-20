@@ -74,6 +74,9 @@ Supported custom build targets:
   tests;
 * `<unit_test_name>_run` - building a unit test `<unit_test_name>` and running
   the built test;
+* `doxygen_doc` - generation of doxygen documentation. To build the target,
+  needs to have the `doxygen` and `dot` utilities installed. The analysis result
+  will be saved in the directory `<build_directory>/doc/html`;
 * `stat_cppcheck` - static analysis of the project's source code using the
   `cppcheck` utility. The analysis result will be saved in the directory
   `<build_directory>/lint/cppcheck/report`.
