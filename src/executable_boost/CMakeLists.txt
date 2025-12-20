@@ -8,3 +8,12 @@ ExecTarget(executable_boost
         pthread
 )
 
+ExampleTarget(example_boost
+    SOURCES
+        main.cpp
+    COMPILE_DEFINITIONS
+        BOOST_LOG_DYN_LINK
+    DEPENDS
+        boost
+        pthread
+)

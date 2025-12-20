@@ -1,4 +1,4 @@
-add_subdirectory(drivers/hello_module)
+#add_subdirectory(drivers/hello_module)
 
 add_subdirectory(libs/interface_lib)
 add_subdirectory(libs/shared_lib)

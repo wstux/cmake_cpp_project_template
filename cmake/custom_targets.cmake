@@ -85,3 +85,11 @@ macro(CustomTestTarget TARGET_NAME)
         VERBATIM
     )
 endmacro()
+
+macro(ExampleTarget TARGET_NAME)
+    if (NOT BUILD_EXAMPLES)
+        return()
+    endif()
+
+    ExecTarget(${TARGET_NAME} ${ARGN})
+endmacro()
