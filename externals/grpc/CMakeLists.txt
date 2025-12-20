@@ -99,12 +99,6 @@ FetchTarget(grpc
 #    CXX_COMPILE_FLAGS
 #        -Wno-redundant-move
     LIBRARIES
-#        absl::check
-#        absl::flags
-#        absl::flags_parse
-#        absl::log
-#        absl::log_initialize
-#        grpc++_reflection
         grpc++
         libprotobuf
         c-ares::cares
