@@ -24,6 +24,40 @@ include(CheckCCompilerFlag)
 include(CheckCXXCompilerFlag)
 
 ################################################################################
+# Public functions for setting global compilation options
+################################################################################
+
+macro(SetCxxStandard STANDARD)
+    set(_std_version "${STANDARD}")
+
+    string(TOLOWER ${STANDARD} STANDARD)
+    if ("${STANDARD}" STREQUAL "default")
+        set(_std_version "${CMAKE_CXX_STANDARD_COMPUTED_DEFAULT}")
+    endif()
+
+    #set(_cxx_std "-std=gnu++${_std_version}")
+    set(_cxx_std "-std=c++${_std_version}")
+    try_set_cxx_flag(CXX_STD "${_cxx_std}")
+    if (FLAG_CXX_STD)
+        message(STATUS "[INFO ] Using C++${_std_version} standard")
+    else ()
+        message(FATAL_ERROR "[ERROR] Failed to set C++${_std_version} standard")
+    endif()
+endmacro()
+
+################################################################################
+# Utilities
+################################################################################
+
+function(_set_to_back LIST_OF_VALUES VALUE)
+    if (${LIST_OF_VALUES})
+        set(${LIST_OF_VALUES} "${${LIST_OF_VALUES}} ${VALUE}" PARENT_SCOPE)
+    else()
+        set(${LIST_OF_VALUES} "${VALUE}" PARENT_SCOPE)
+    endif()
+endfunction()
+
+################################################################################
 # Macro for set build flags
 ################################################################################
 
@@ -31,10 +65,10 @@ include(CheckCXXCompilerFlag)
 macro(set_c_flag FLAG)
     if(CMAKE_C_COMPILER)
         if(${ARGC} GREATER 1)
-            set(CMAKE_C_FLAGS_${ARGV1} "${CMAKE_C_FLAGS_${ARGV1}} ${FLAG}")
+            _set_to_back(CMAKE_C_FLAGS_${ARGV1} "${FLAG}")
             message(TRACE "[TRACE] Macro 'set_c_flag': ARGV1='${ARGV1}', FLAG='${FLAG}'")
         else()
-            set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${FLAG}")
+            _set_to_back(CMAKE_C_FLAGS "${FLAG}")
             message(TRACE "[TRACE] Macro 'set_c_flag': FLAG='${FLAG}'")
         endif()
     endif()
@@ -44,10 +78,10 @@ endmacro()
 macro(set_cxx_flag FLAG)
     if(CMAKE_CXX_COMPILER)
         if(${ARGC} GREATER 1)
-            set(CMAKE_CXX_FLAGS_${ARGV1} "${CMAKE_CXX_FLAGS_${ARGV1}} ${FLAG}")
+            _set_to_back(CMAKE_CXX_FLAGS_${ARGV1} "${FLAG}")
             message(TRACE "[TRACE] Macro 'set_cxx_flag': ARGV1='${ARGV1}', FLAG='${FLAG}'")
         else()
-            set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${FLAG}")
+            _set_to_back(CMAKE_CXX_FLAGS "${FLAG}")
             message(TRACE "[TRACE] Macro 'set_cxx_flag': FLAG='${FLAG}'")
         endif()
     endif()
@@ -107,9 +141,9 @@ endmacro()
 
 # Set linker flag.
 macro(set_linker_flag FLAG)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${FLAG}")
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${FLAG}")
-    set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} ${FLAG}")
+    _set_to_back(CMAKE_EXE_LINKER_FLAGS    "${FLAG}")
+    _set_to_back(CMAKE_SHARED_LINKER_FLAGS "${FLAG}")
+    _set_to_back(CMAKE_MODULE_LINKER_FLAGS "${FLAG}")
     message(TRACE "[TRACE] Macro 'set_linker_flag': FLAG='${FLAG}'")
 endmacro()
 
@@ -145,30 +179,11 @@ endmacro()
 ################################################################################
 
 if (CMAKE_CXX_COMPILER)
-    # Check support C++ standard
-    try_set_cxx_flag(CXX_17 "-std=gnu++17")
-    if(FLAG_CXX_17)
-        message(STATUS "[INFO ] Use C++17 standard")
-    else()
-        try_set_cxx_flag(CXX_14 "-std=gnu++14")
-        if(FLAG_CXX_14)
-            message(STATUS "[INFO ] Use C++14 standard")
-        else()
-            try_set_cxx_flag(CXX_11 "-std=gnu++11")
-            if(FLAG_CXX_11)
-                message(STATUS "[INFO ] Use C++11 standard")
-            else()
-                try_set_cxx_flag(CXX_0X "-std=gnu++0x")
-                if(FLAG_CXX_0X)
-                    message(STATUS "[INFO ] Use C++0x standard")
-                else()
-                    message(FATAL_ERROR "[FATAL] C++ not supported by compiler")
-                endif()
-            endif()
-        endif()
+    if (USE_DEFAULT_STANDARD)
+        # Setting the default C++ standard version
+        SetCxxStandard("default")
     endif()
 endif()
-
 
 ################################################################################
 # Setting common compile flags
@@ -210,20 +225,11 @@ endif()
 ################################################################################
 # Setting coverage compile flags
 ################################################################################
-if (COVERAGE)
+
+if (COVERAGE_BUILD)
     set_flag("-g -O0 --coverage -fprofile-arcs -ftest-coverage")
     set_linker_flag("-fprofile-arcs -ftest-coverage")
 endif()
-##try_set_flag_by_opt(USE_COVERAGE    "--coverage -fprofile-arcs -ftest-coverage")
-##try_set_flag_by_opt(USE_COVERAGE    "--coverage -g -O0")#"-fprofile-arcs -ftest-coverage")
-##try_set_flag_by_opt(USE_COVERAGE    "-fprofile-arcs")
-#set_flag_by_opt(USE_COVERAGE    "-fprofile-arcs")
-##try_set_flag_by_opt(USE_COVERAGE    "-ftest-coverage")
-#set_flag_by_opt(USE_COVERAGE    "-ftest-coverage")
-##set_flag_by_opt(USE_COVERAGE    "-fprofile-generate=${CMAKE_BINARY_DIR}/coverage")
-##set_flag_by_opt(USE_COVERAGE    "-fprofile-dir=${CMAKE_BINARY_DIR}/coverage")
-##set_flag_by_opt(USE_COVERAGE    "-fprofile-prefix-path=${CMAKE_BINARY_DIR}/coverage")
-#set_linker_flag_by_opt(USE_COVERAGE "-fprofile-arcs -lgcov")
 
 ################################################################################
 # Set flags if isset options
@@ -243,13 +249,3 @@ set_flag_by_opt(USE_WERROR          "-Werror")
 ################################################################################
 
 set_linker_flag("-Wl,-rpath=${CMAKE_LIBRARY_OUTPUT_DIRECTORY}")
-
-#try_set_flag_by_opt(USE_PTHREAD             "-pthread")
-#if (LINUX)
-#    set_linker_flag_by_opt(USE_PTHREAD      "-pthread")
-#endif()
-
-#if (USE_PEDANTIC)
-#    try_set_flag(WARNINGS "-pedantic-errors")
-#endif()
-
