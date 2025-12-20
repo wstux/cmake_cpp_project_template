@@ -5,9 +5,8 @@ The template includes targets for building libraries, tests, and executables.
 Currently supported build on GNU/Linux.
 
 The *cmake_cpp_project_template* assumes you want to setup a project using
-* CMake (3.0 or above)
+* CMake (3.10 or above)
 * C/C++ compiler
-
 
 ## Contents
 
@@ -35,7 +34,7 @@ The *cmake_cpp_project_template* assumes you want to setup a project using
 
 ## Description
 
-The template sets up hooks for Git. In particular, a check for the presence of
+The template sets up hooks for `git`. In particular, a check for the presence of
 last whitespace characters in lines is added. This can lead to errors due to
 empty lines at the end of the file. To fix this error, you need to run the
 command:
@@ -514,4 +513,3 @@ To do:
 &copy; 2022 Chistyakov Alexander.
 
 Open sourced under MIT license, the terms of which can be read here — [MIT License](http://opensource.org/licenses/MIT).
-
