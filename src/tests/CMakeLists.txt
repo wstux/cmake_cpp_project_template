@@ -24,4 +24,3 @@ CustomTestTarget(ut_custom_test_target_with_args
         ${CMAKE_BINARY_DIR}
 #    VERBATIM
 )
-

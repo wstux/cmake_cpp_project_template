@@ -1,3 +1,7 @@
+################################################################################
+# Searching of boost package
+################################################################################
+
 find_package(Boost 1.74.0
              COMPONENTS program_options
 #             REQUIRED
@@ -15,4 +19,3 @@ if(Boost_FOUND)
 else()
     message(INFO " boost not found")
 endif()
-
