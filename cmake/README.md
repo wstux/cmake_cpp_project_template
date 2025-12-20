@@ -12,15 +12,25 @@ The *cmake_cpp_project_template* assumes you want to setup a project using
 ## Contents
 
 * [Description](#description)
+* [Build](#build)
+  * [Custom build targets](#custom-build-targets)
+  * [Coverage build target](#coverage-build-target)
 * [Usage](#usage)
 * [Targets](#targets)
   * [Libraries](#libraries)
   * [Executables](#executables)
   * [Tests](#tests)
   * [Drivers](#drivers)
+  * [Examples](#examples)
   * [Externals](#externals)
   * [Custom targets](#custom-targets)
-* [Build](#build)
+* [Examples of using targets](#examples-of-using-targets)
+  * [Libraries example](#libraries-example)
+  * [Executables example](#executables-example)
+  * [Tests example](#tests-example)
+  * [Drivers example](#drivers-example)
+  * [Externals example](#externals-example)
+  * [Custom tests example](#custom-tests-example)
 * [License](#license)
 
 ## Description
@@ -30,14 +40,11 @@ last whitespace characters in lines is added. This can lead to errors due to
 empty lines at the end of the file. To fix this error, you need to run the
 command:
 ```
-git config --global core.whitespace -blank-at-eof
+$ git config --global core.whitespace -blank-at-eof
 ```
 
-## Usage
-
-### Build project
-
-The project is built with the `make` command. Assembly takes place in three stages:
+The project is built with the `make` command. Assembly takes place in three
+stages:
 1. the `make` command starts configuring the project with `cmake`;
 2. the project is configured by the `cmake` system;
 3. start building the project/target with `make`.
@@ -47,6 +54,55 @@ The build looks like this:
 user -> make -> cmake -> make
 ```
 
+## Build
+
+The project is built with the `make` command:
+```
+$ make <build_type>/<target_name>
+```
+Supported build types:
+* `release` - release build of the project with optimization enabled in the
+  directory `<repo_dir>/build_release`;
+* `debug` - debug build of the project without optimization in the directory
+  `<repo_dir>/build_debug`.
+
+Making a build without specifying a type results in a build with the release
+build type.
+```
+$ make <target_name>
+```
+
+### Custom build targets
+
+Supported custom build targets:
+* `all` - building of all targets;
+* `clean` - cleaning the build directory, removing all build artifacts and the
+  build directory;
+* `test` - build all unit tests (targets marked as tests) and run the built
+  tests;
+* `<unit_test_name>_run` - building a unit test `<unit_test_name>` and running
+  the built test;
+* `doxygen_doc` - generation of doxygen documentation. To build the target,
+  needs to have the `doxygen` and `dot` utilities installed. The analysis result
+  will be saved in the directory `<build_directory>/doc/html`;
+* `stat_cppcheck` - static analysis of the project's source code using the
+  `cppcheck` utility. The analysis result will be saved in the directory
+  `<build_directory>/lint/cppcheck/report`.
+
+### Coverage build target
+
+Testing code coverage is performed using the command:
+```
+$ make coverage
+```
+
+Executing this command will build the repository, run unit tests, and generate
+code coverage statistics. The build will be performed in `debug` mode in the
+`<repo_dir>/build_coverage` directory. Code test coverage statistics will be
+saved in the `<repo_dir>/build_coverage/__coverage/report` directory.
+
+## Usage
+
 ## Targets
 
 The library supports targets:
@@ -54,7 +110,8 @@ The library supports targets:
 * [ExecTarget](#executables) - building executable files;
 * [TestTarget](#tests) - building tests;
 * [DriverTarget](#drivers) - building kernel modules;
-* [ExternalTarget and WrapperTarget](#externals) - building external modules;
+* [ExampleTarget](#examples) - building example executable files;
+* [ExternalTarget, FetchTarget and WrapperTarget](#externals) - building external modules;
 * [CustomTarget](#custom-targets) - custom targets.
 
 ### Libraries
@@ -91,30 +148,6 @@ LibTarget(<lib_name> <lib_type>
 )
 ```
 
-Usage example:
-```
-LibTarget(shared_lib SHARED
-    HEADERS
-        shared_lib.h
-        details/shared_lib_impl.h
-    SOURCES
-        details/shared_lib.cpp
-        details/shared_lib_impl.cpp
-    INCLUDE_DIR     libs
-    LINKER_LANGUAGE CXX
-    COMPILE_DEFINITIONS
-        BOOST_LOG_DYN_LINK
-    LIBRARIES
-        interface_lib
-        shared_lib_2
-        static_lib
-    DEPENDS
-        boost
-        ext1
-        ext2
-)
-```
-
 ### Executables
 
 `ExecTarget` declares the build target to be an executable file. `ExecTarget`
@@ -148,24 +181,6 @@ ExecTarget(<exec_name>
 )
 ```
 
-Usage example:
-```
-ExecTarget(executable
-    HEADERS
-        executable.h
-    SOURCES
-        main.cpp
-    LIBRARIES
-        interface_lib
-        shared_lib
-        static_lib
-    DEPENDS
-        boost
-        ext1
-        ext2
-)
-```
-
 ### Tests
 
 `TestTarget` declares the build target to be an executable file. `cmake` supports
@@ -187,6 +202,8 @@ supports keywords:
 The `LIBRARIES` field specifies the list of libraries (targets) included in the
 project, the `DEPENDS` field specifies the system/third-party libraries (targets)
 required to build the project/target.
+The build of this target can be enabled/disabled using the BUILD_TESTS
+configuration option.
 
 Test build target template:
 ```
@@ -203,26 +220,13 @@ TestTarget(<test_name>
 )
 ```
 
-Usage example:
-```
-TestTarget(ut_test
-    HEADERS
-        test.h
-    SOURCES
-        ut_test.cpp
-    LIBRARIES
-        interface_lib
-        shared_lib
-        static_lib
-    DEPENDS
-        boost
-        ext1
-        ext2
-    DISABLE
-)
-```
-
 ### Drivers
+
+To build a Linux kernel modules, needs to install kernel headers.
+Command for installing kernel headers:
+```
+$ sudo apt-get install linux-headers-$(uname -r)
+```
 
 `DriverTarget` declares the kernel driver as the build target. `DriverTarget`
 supports keywords:
@@ -254,25 +258,11 @@ DriverTarget(<driver_name>
 )
 ```
 
-Usage example:
-```
-DriverTarget(hello_module
-    INCLUDE_DIRS
-        module
-    SOURCES
-        main.c
-    EXTRA_CFLAGS
-        -Wno-unused-variable
-        -Wno-unused-function
-    EXTRA_LDFLAGS
-        --strip-all
-        -O3
-    DEFINES
-        MOD_NAME="hello_module"
-        MOD_CONFIG
-        MOD_NUM=1
-)
-```
+### Examples
+
+This target type is synonymous with `ExecTarget`. A unique feature of this target
+type is that their build can be enabled/disabled using the BUILD_EXAMPLES
+configuration option.
 
 ### Externals
 
@@ -319,23 +309,25 @@ ExternalTarget(<ext_name>
 )
 ```
 
-Usage example:
+#### Fetchs
+
+`FetchTarget` is a wrapper around the cmake `FetchContent` functionality for
+embedding third-party projects into project. `FetchTarget` supports keywords:
+* `GIT_REPOSITORY` - link to a third-party project's git repository;
+* `GIT_TAG` - git tag of the required project version;
+* `CMAKE_OPTIONS` - list of variables declared in cmake as `options` with their
+  values;
+* `CMAKE_VARIABLES` - list of cmake variables with their values;
+* `LIBRARIES` - list of libraries provided by the target.
+
+External project build target template:
 ```
-ExternalTarget(testing
-    URL
-        https://github.com/wstux/testing_template/archive/refs/heads/master.zip
-    CONFIGURE_COMMAND
-        cmake --install-prefix ${EXTERNALS_PREFIX}/testing/install  ./
-    BUILD_COMMAND
-        cmake --build ./
-    INSTALL_COMMAND
-        cmake --install ./
-    PATCHES
-        ${CMAKE_SOURCE_DIR}/externals/patches/patch_example.patch
-    INCLUDE_DIR
-        ${EXTERNALS_PREFIX}/testing/install/include
-    INSTALL_DIR
-        ${EXTERNALS_PREFIX}/testing/install
+FetchTarget(<ext_name>
+    GIT_REPOSITORY  <url_to_git_repo>
+    GIT_TAG         <git_tag>
+    CMAKE_OPTIONS   <list_of_options>
+    CMAKE_VARIABLES <list_of_variables>
+    LIBRARIES       <list_of_libraries>
 )
 ```
 
@@ -367,6 +359,9 @@ build system testing framework. `CustomTestTarget` supports keywords:
 * `DEPENDS` - list of the target's dependencies;
 * `DISABLE` - disable autorun test with `make test` command.
 
+The build of this target can be enabled/disabled using the BUILD_TESTS
+configuration option.
+
 Custom test build target template:
 ```
 CustomTestTarget(<test_name>
@@ -378,7 +373,122 @@ CustomTestTarget(<test_name>
 )
 ```
 
-Usage example:
+## Examples of using targets
+
+### Libraries example
+
+Example of using the library target:
+```
+LibTarget(shared_lib SHARED
+    HEADERS
+        shared_lib.h
+        details/shared_lib_impl.h
+    SOURCES
+        details/shared_lib.cpp
+        details/shared_lib_impl.cpp
+    INCLUDE_DIR     libs
+    LINKER_LANGUAGE CXX
+    COMPILE_DEFINITIONS
+        BOOST_LOG_DYN_LINK
+    LIBRARIES
+        interface_lib
+        shared_lib_2
+        static_lib
+    DEPENDS
+        boost
+        ext1
+        ext2
+)
+```
+
+### Executables example
+
+Example of using the executable target:
+```
+ExecTarget(executable
+    HEADERS
+        executable.h
+    SOURCES
+        main.cpp
+    LIBRARIES
+        interface_lib
+        shared_lib
+        static_lib
+    DEPENDS
+        boost
+        ext1
+        ext2
+)
+```
+
+### Tests example
+
+Example of using the test target:
+```
+TestTarget(ut_test
+    HEADERS
+        test.h
+    SOURCES
+        ut_test.cpp
+    LIBRARIES
+        interface_lib
+        shared_lib
+        static_lib
+    DEPENDS
+        boost
+        ext1
+        ext2
+    DISABLE
+)
+```
+
+### Drivers example
+
+Example of using the driver target:
+```
+DriverTarget(hello_module
+    INCLUDE_DIRS
+        module
+    SOURCES
+        main.c
+    EXTRA_CFLAGS
+        -Wno-unused-variable
+        -Wno-unused-function
+    EXTRA_LDFLAGS
+        --strip-all
+        -O3
+    DEFINES
+        MOD_NAME="hello_module"
+        MOD_CONFIG
+        MOD_NUM=1
+)
+```
+
+### Externals example
+
+Example of using the external target:
+```
+ExternalTarget(testing
+    URL
+        https://github.com/wstux/testing_template/archive/refs/heads/master.zip
+    CONFIGURE_COMMAND
+        cmake --install-prefix ${EXTERNALS_PREFIX}/testing/install  ./
+    BUILD_COMMAND
+        cmake --build ./
+    INSTALL_COMMAND
+        cmake --install ./
+    PATCHES
+        ${CMAKE_SOURCE_DIR}/externals/patches/patch_example.patch
+    INCLUDE_DIR
+        ${EXTERNALS_PREFIX}/testing/install/include
+    INSTALL_DIR
+        ${EXTERNALS_PREFIX}/testing/install
+)
+```
+
+### Custom tests example
+
+Example of using the custom test target:
 ```
 CustomTestTarget(ut_custom_test_target_with_args
     SOURCE
@@ -390,8 +500,6 @@ CustomTestTarget(ut_custom_test_target_with_args
     DISABLE
 )
 ```
-
-## Build
 
 ## ToDo
 

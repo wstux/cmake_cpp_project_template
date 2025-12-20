@@ -47,4 +47,3 @@ include(find_packages.cmake PUBLIC)
 
 add_subdirectory(externals)
 add_subdirectory(src)
-
