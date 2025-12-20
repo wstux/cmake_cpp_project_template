@@ -45,6 +45,24 @@ macro(SetCxxStandard STANDARD)
     endif()
 endmacro()
 
+macro(SetCStandard STANDARD)
+    set(_std_version "${STANDARD}")
+
+    string(TOLOWER ${STANDARD} STANDARD)
+    if ("${STANDARD}" STREQUAL "default")
+        set(_std_version "${CMAKE_C_STANDARD_COMPUTED_DEFAULT}")
+    endif()
+
+    set(_c_std "-std=gnu${_std_version}")
+    #set(_cxx_std "-std=c${_std_version}")
+    try_set_c_flag(C_STD "${_c_std}")
+    if (FLAG_C_STD)
+        message(STATUS "[INFO ] Using C${_std_version} standard")
+    else ()
+        message(FATAL_ERROR "[ERROR] Failed to set C${_std_version} standard")
+    endif()
+endmacro()
+
 ################################################################################
 # Utilities
 ################################################################################
@@ -101,10 +119,25 @@ macro(set_flag_by_opt OPT FLAG)
     endif()
 endmacro()
 
+# Try set C compiler flag if flag supported.
+macro(try_set_c_flag PROP FLAG)
+    if (CMAKE_C_COMPILER)
+        message(TRACE "[TRACE] Macro 'try_set_c_flag': PROP='${PROP}', FLAG='${FLAG}', ARGV2='${ARGV2}'")
+
+        set(CMAKE_REQUIRED_QUIET TRUE)
+        check_c_compiler_flag(${FLAG} FLAG_${PROP})
+        if (FLAG_${PROP})
+            set_c_flag(${FLAG} ${ARGV2})
+        endif()
+    endif()
+endmacro()
+
 # Try set C++ compiler flag if flag supported.
 macro(try_set_cxx_flag PROP FLAG)
     if (CMAKE_CXX_COMPILER)
         message(TRACE "[TRACE] Macro 'try_set_cxx_flag': PROP='${PROP}', FLAG='${FLAG}', ARGV2='${ARGV2}'")
+
+        set(CMAKE_REQUIRED_QUIET TRUE)
         check_cxx_compiler_flag(${FLAG} FLAG_${PROP})
         if (FLAG_${PROP})
             set_cxx_flag(${FLAG} ${ARGV2})
@@ -115,6 +148,7 @@ endmacro()
 # Try set C and C++ compiler flag if flag supported.
 macro(try_set_flag PROP FLAG)
     message(TRACE "[TRACE] Macro 'try_set_flag': PROP='${PROP}', FLAG='${FLAG}', ARGV2='${ARGV2}'")
+    set(CMAKE_REQUIRED_QUIET TRUE)
     if (CMAKE_C_COMPILER)
         check_C_compiler_flag(${FLAG} FLAG_${PROP})
     endif()
@@ -158,6 +192,7 @@ endmacro()
 # Try set linker flag.
 macro(try_set_linker_flag PROP FLAG)
     # Check it with the C compiler
+    set(CMAKE_REQUIRED_QUIET TRUE)
     set(CMAKE_REQUIRED_FLAGS ${FLAG})
     check_C_compiler_flag(${FLAG} FLAG_${PROP})
     set(CMAKE_REQUIRED_FLAGS "")
@@ -178,8 +213,21 @@ endmacro()
 # Set compiler flags
 ################################################################################
 
+if (CMAKE_C_COMPILER)
+    if (PROJECT_C_STANDARD)
+        # Setting the C standard version from defined variable
+        SetCStandard("${PROJECT_C_STANDARD}")
+    elseif (USE_DEFAULT_STANDARD)
+        # Setting the default C standard version
+        SetCStandard("default")
+    endif()
+endif()
+
 if (CMAKE_CXX_COMPILER)
-    if (USE_DEFAULT_STANDARD)
+    if (PROJECT_CXX_STANDARD)
+        # Setting the C++ standard version from defined variable
+        SetCxxStandard("${PROJECT_CXX_STANDARD}")
+    elseif (USE_DEFAULT_STANDARD)
         # Setting the default C++ standard version
         SetCxxStandard("default")
     endif()
