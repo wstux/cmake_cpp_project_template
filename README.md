@@ -4,14 +4,14 @@ The template includes targets for building libraries, tests, and executables.
 
 Currently supported build on GNU/Linux.
 
-The *cmake_cpp_project_template* assumes you want to setup a project using
-* CMake (3.0 or above)
+The *cmake_cpp_project_template* assumes the project is configured using:
+* CMake (3.10 or above)
 * C/C++ compiler
-
 
 ## Contents
 
 * [Description](#description)
+  * [Options](#options)
 * [Build](#build)
   * [Custom build targets](#custom-build-targets)
   * [Coverage build target](#coverage-build-target)
@@ -35,7 +35,7 @@ The *cmake_cpp_project_template* assumes you want to setup a project using
 
 ## Description
 
-The template sets up hooks for Git. In particular, a check for the presence of
+The template sets up hooks for `git`. In particular, a check for the presence of
 last whitespace characters in lines is added. This can lead to errors due to
 empty lines at the end of the file. To fix this error, you need to run the
 command:
@@ -53,6 +53,28 @@ The build looks like this:
 ```
 user -> make -> cmake -> make
 ```
+
+### Options
+
+Allowed extra command line sanitizers options:
+* `USE_ADDR_SANITIZER` - build project with address sanitizer;
+* `USE_LEAK_SANITIZER` - build project with leak sanitizer;
+* `USE_BEHAVIOR_SANITIZER` - build project with undefined behavior sanitizer;
+* `USE_THREAD_SANITIZER` - build project with thread sanitizer.
+
+Allowed extra command line C/C++ standard options:
+* `USE_DEFAULT_STANDARD` - using the C/C++ standard by default;
+* `PROJECT_C_STANDARD` - C standard;
+* `PROJECT_CXX_STANDARD` - C++ standard.
+
+Allowed extra command line building options:
+* `USE_LTO` - use link-time optimization for release builds;
+* `USE_PEDANTIC` - tell the compiler to be pedantic;
+* `USE_WERROR` - tell the compiler to make the build fail when warnings are present.
+
+Allowed extra command line components building options:
+* `BUILD_EXAMPLES` - build examples;
+* `BUILD_TESTS` - build perftests and unittests.
 
 ## Build
 
@@ -514,4 +536,3 @@ To do:
 &copy; 2022 Chistyakov Alexander.
 
 Open sourced under MIT license, the terms of which can be read here — [MIT License](http://opensource.org/licenses/MIT).
-
