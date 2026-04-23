@@ -8,6 +8,7 @@ add_subdirectory(libs/static_lib)
 add_subdirectory(libs/static_lib_2)
 add_subdirectory(libs/static_lib_3)
 add_subdirectory(libs/static_lib_boost)
+add_subdirectory(libs/version)
 
 add_subdirectory(executable)
 add_subdirectory(executable_boost)

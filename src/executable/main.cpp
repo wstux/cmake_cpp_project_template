@@ -18,6 +18,8 @@
 #include "static_lib_3/static_lib_3.h"
 #include "static_lib_boost/static_lib_boost.h"
 
+#include "version.h"
+
 #define TEST_LIB(fn, et)                                                       \
     if (fn() != et) {                                                          \
         std::cerr << "[FAIL] " << #fn << "('" << fn() << "') != '" << et << "'"\
@@ -25,6 +27,14 @@
         rc = 1;                                                                \
     } else                                                                     \
         std::cout << "[ OK ] " << #fn << "('" << fn() << "')" << std::endl
+
+#define TEST_CASE(var, et)                                                     \
+    if (et != var) {                                                           \
+        std::cerr << "[FAIL] " << #var << "('" << var << "') != '" << et << "'"\
+                  << std::endl;                                                \
+        rc = 1;                                                                \
+    } else                                                                     \
+        std::cout << "[ OK ] " << #var << std::endl
 
 
 TEST(case_name_1, assert_true)
@@ -69,6 +79,8 @@ int main(int argc, char** argv)
     TEST_LIB(static_lib_func_3, "interface_lib_func");
 
     TEST_LIB(static_lib_boost, "Tuesday 2001-Oct-09");
+
+    TEST_CASE(PROJECT_VERSION, 101);
 
     RUN_ALL_TESTS();
 
