@@ -27,10 +27,13 @@ cmake_minimum_required (VERSION 3.10)
 ################################################################################
 
 include(common)
+include(version)
 
 if (NOT COMMON_CMAKE_DIR)
     message(FATAL_ERROR "[FATAL] COMMON_CMAKE_DIR variable is not setted")
 endif()
+
+message(STATUS "[INFO ] Building project '${PROJECT_NAME}' version v.${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}.${PROJECT_VERSION_PATCH}-${PROJECT_VERSION_BUILD}")
 
 AddPlatform("Linux")
 
