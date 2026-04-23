@@ -3,4 +3,3 @@ LibTarget(interface_lib INTERFACE
         interface_lib.h
     INCLUDE_DIR src/libs
 )
-
