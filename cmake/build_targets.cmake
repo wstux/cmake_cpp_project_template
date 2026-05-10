@@ -82,7 +82,7 @@ macro(LibTarget TARGET_NAME)
         target_include_directories(${TARGET_NAME} PRIVATE ${_include_dir})
         set_target_properties(${TARGET_NAME} PROPERTIES INCLUDE_DIRECTORIES ${_include_dir})
     else()
-        message(ERROR "[ERROR] Unsupported library type")
+        log_error("Unsupported library type")
     endif()
 
     set(_public_headers "")

@@ -17,5 +17,5 @@ if(Boost_FOUND)
                               INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}"
     )
 else()
-    message(INFO " boost not found")
+    log_info("boost not found")
 endif()
