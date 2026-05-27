@@ -153,10 +153,12 @@ function(_LinuxDriverTarget TARGET_NAME)
 
     ############################################################################
     # Create module build target
+    file(MAKE_DIRECTORY ${CMAKE_DRIVER_OUTPUT_DIRECTORY})
     add_custom_command(
         OUTPUT ${_module_target}
         COMMAND cd "${_module_src_root_dir}"
         COMMAND $(MAKE) -f "${_makefile_dest}"
+        COMMAND ${CMAKE_COMMAND} -E copy "${_module_build_dir}/${_module_target}" "${CMAKE_DRIVER_OUTPUT_DIRECTORY}/${_module_target}"
         WORKING_DIRECTORY ${_module_src_root_dir}
         DEPENDS ${_module_deps}
         VERBATIM
