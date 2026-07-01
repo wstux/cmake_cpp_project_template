@@ -150,9 +150,21 @@ macro(ExecTarget TARGET_NAME)
         _flags_kw _values_kw _lists_kw ${ARGN}
     )
 
+    set(_include_dir "")
+    if (${TARGET_NAME}_INCLUDE_DIR)
+        set(_include_dir "${${TARGET_NAME}_INCLUDE_DIR}")
+        if (NOT IS_ABSOLUTE "${_include_dir}")
+            set(_include_dir "${PROJECT_SOURCE_DIR}/${_include_dir}")
+        endif()
+    else()
+        _get_default_include_dirs(${TARGET_NAME} _include_dir)
+    endif()
+
     add_executable(${TARGET_NAME}
         ${${TARGET_NAME}_HEADERS} ${${TARGET_NAME}_SOURCES}
     )
+
+    target_include_directories(${TARGET_NAME} PRIVATE ${_include_dir})
 
     if ("${${TARGET_NAME}_LINKER_LANGUAGE}" STREQUAL "C" OR "${${TARGET_NAME}_LINKER_LANGUAGE}" STREQUAL "CXX")
         set_target_properties(${TARGET_NAME} PROPERTIES
