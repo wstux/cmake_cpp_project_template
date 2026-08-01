@@ -25,6 +25,7 @@ option(USE_LTO              "Use link-time optimization for release builds" ON)
 option(USE_PEDANTIC         "Tell the compiler to be pedantic" ON)
 option(USE_WERROR           "Tell the compiler to make the build fail when warnings are present" ON)
 
+option(BUILD_BOOST          "Build boost" ON)
 option(BUILD_EXAMPLES       "Build examples" ON)
 option(BUILD_TESTS          "Build perftests and unittests" ON)
 
