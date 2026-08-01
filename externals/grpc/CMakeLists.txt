@@ -53,6 +53,8 @@ FetchTarget(grpc
     GIT_REPOSITORY  https://github.com/grpc/grpc.git
     GIT_TAG         v1.76.0
     CMAKE_OPTIONS
+        CMAKE_WARN_DEPRECATED=OFF
+        # grps flags
         gRPC_BUILD_TESTS=OFF
         gRPC_BUILD_GRPC_CPP_PLUGIN=ON
         gRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF
