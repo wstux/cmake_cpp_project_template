@@ -25,6 +25,7 @@ option(USE_LTO              "Use link-time optimization for release builds" ON)
 option(USE_PEDANTIC         "Tell the compiler to be pedantic" ON)
 option(USE_WERROR           "Tell the compiler to make the build fail when warnings are present" ON)
 
+option(BUILD_BOOST          "Build boost" ON)
 option(BUILD_EXAMPLES       "Build examples" ON)
 option(BUILD_TESTS          "Build perftests and unittests" ON)
 
@@ -44,7 +45,7 @@ EnableSanitizers(${USE_ADDR_SANITIZER} ${USE_LEAK_SANITIZER} ${USE_BEHAVIOR_SANI
 # Include source code
 ################################################################################
 
-include(find_packages.cmake PUBLIC)
+#include(find_packages.cmake PUBLIC)
 
 add_subdirectory(externals)
 add_subdirectory(src)
