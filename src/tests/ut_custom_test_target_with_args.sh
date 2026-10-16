@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [[ "$1" -eq "" ]]; then
+if [[ -z "$1" ]]; then
     exit 1
 fi
 
