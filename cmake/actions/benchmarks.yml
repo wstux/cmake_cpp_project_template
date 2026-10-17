@@ -53,7 +53,7 @@ jobs:
           echo "Branch gh-pages exists."
         fi
 
-    - name: Store and plot results
+    - name: Store results
       uses: benchmark-action/github-action-benchmark@v1
       with:
         tool: 'googlecpp'
